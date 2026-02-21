@@ -1,0 +1,114 @@
+"use client";
+
+import { useState, useRef } from "react";
+import { Button } from "@/components/ui/button";
+
+type ImageUploadProps = {
+  images: string[];
+  onChange: (images: string[]) => void;
+};
+
+export function ImageUpload({ images, onChange }: ImageUploadProps) {
+  const [uploading, setUploading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  async function handleFiles(files: FileList | null) {
+    if (!files?.length) return;
+
+    setUploading(true);
+    const formData = new FormData();
+    for (const file of Array.from(files)) {
+      formData.append("files", file);
+    }
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        onChange([...images, ...data.urls]);
+      }
+    } catch {
+      // Upload failed
+    } finally {
+      setUploading(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  }
+
+  function removeImage(index: number) {
+    onChange(images.filter((_, i) => i !== index));
+  }
+
+  return (
+    <div className="space-y-3">
+      {images.length > 0 && (
+        <div className="grid grid-cols-3 gap-2">
+          {images.map((src, idx) => (
+            <div key={idx} className="relative group aspect-video rounded-md overflow-hidden border">
+              <img src={src} alt="" className="h-full w-full object-cover" />
+              <button
+                type="button"
+                onClick={() => removeImage(idx)}
+                className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/60 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div
+        className="border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:border-primary transition-colors"
+        onClick={() => inputRef.current?.click()}
+        onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+        onDrop={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleFiles(e.dataTransfer.files);
+        }}
+      >
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          className="hidden"
+          onChange={(e) => handleFiles(e.target.files)}
+        />
+        {uploading ? (
+          <p className="text-sm text-muted-foreground">Ucitavanje...</p>
+        ) : (
+          <div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mx-auto mb-2 text-muted-foreground"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" x2="12" y1="3" y2="15" />
+            </svg>
+            <p className="text-sm text-muted-foreground">
+              Kliknite ili prevucite slike ovde
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Max 5MB po slici
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,157 @@
+{
+  "common": {
+    "appName": "Aukcija",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "back": "Back",
+    "submit": "Submit",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "actions": "Actions",
+    "noResults": "No results",
+    "error": "Error",
+    "success": "Success"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "email": "Email address",
+    "password": "Password",
+    "loginButton": "Sign in",
+    "invalidCredentials": "Invalid email or password",
+    "accountDeactivated": "Your account has been deactivated",
+    "setPassword": "Set password",
+    "name": "Full name",
+    "confirmPassword": "Confirm password",
+    "activateAccount": "Activate account",
+    "inviteExpired": "Invitation link has expired",
+    "accountActivated": "Account activated successfully!"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "auctions": "Auctions",
+    "vehicles": "Vehicles",
+    "users": "Users",
+    "myBids": "My Bids",
+    "wonAuctions": "Won Auctions",
+    "notifications": "Notifications",
+    "profile": "Profile"
+  },
+  "auction": {
+    "title": "Auctions",
+    "create": "New Auction",
+    "status": {
+      "DRAFT": "Draft",
+      "LIVE": "Live",
+      "ENDED": "Ended",
+      "CANCELLED": "Cancelled",
+      "ARCHIVED": "Archived"
+    },
+    "type": {
+      "SEALED": "Sealed Bid",
+      "OPEN": "Open",
+      "INDICATOR": "With Indicator",
+      "ANONYMOUS": "Anonymous"
+    },
+    "typeDescription": {
+      "SEALED": "Buyers cannot see other bids. Highest bid wins at the end.",
+      "OPEN": "Everyone sees the current highest bid and who placed it.",
+      "INDICATOR": "Each buyer only sees if their bid is currently the highest (green/red dot).",
+      "ANONYMOUS": "Everyone sees the current highest bid, but not who placed it."
+    },
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "currency": "Currency",
+    "startingPrice": "Starting Price",
+    "reservePrice": "Reserve Price",
+    "showReservePrice": "Show Reserve Price",
+    "buyNow": "Buy Now",
+    "buyNowPrice": "Buy Now Price",
+    "showBidCount": "Show Bid Count",
+    "currentBid": "Current Bid",
+    "yourBid": "Your Bid",
+    "placeBid": "Place Bid",
+    "bidPlaced": "Bid placed successfully!",
+    "bidError": "Error placing bid",
+    "timeLeft": "Time Left",
+    "ended": "Ended",
+    "noBids": "No bids",
+    "bids": "Bids",
+    "winner": "Winner",
+    "finalPrice": "Final Price",
+    "reserveNotMet": "Reserve price not met",
+    "youAreHighest": "You have the highest bid!",
+    "youAreOutbid": "You have been outbid!",
+    "buyNowConfirm": "Are you sure you want to buy now for {price} {currency}?",
+    "sold": "Sold",
+    "youWon": "You won!",
+    "you": "You",
+    "archive": "Archive",
+    "filter": {
+      "active": "Active",
+      "ended": "Ended",
+      "archived": "Archived"
+    },
+    "restore": "Restore",
+    "showArchived": "Show archived"
+  },
+  "vehicle": {
+    "title": "Vehicles",
+    "create": "New Vehicle",
+    "name": "Name",
+    "description": "Description",
+    "specifications": "Specifications",
+    "images": "Images",
+    "year": "Year",
+    "mileage": "Mileage",
+    "fuel": "Fuel",
+    "transmission": "Transmission",
+    "engine": "Engine",
+    "power": "Power",
+    "color": "Color",
+    "addImage": "Add Image",
+    "filter": {
+      "available": "Available",
+      "active": "On Auction",
+      "sold": "Sold"
+    }
+  },
+  "user": {
+    "title": "Users",
+    "invite": "Invite User",
+    "role": "Role",
+    "status": "Status",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "roles": {
+      "ADMIN": "Administrator",
+      "BUYER": "Buyer"
+    },
+    "statuses": {
+      "PENDING": "Pending",
+      "ACTIVE": "Active",
+      "DEACTIVATED": "Deactivated"
+    }
+  },
+  "notification": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "noNotifications": "No notifications",
+    "types": {
+      "INVITATION": "Invitation",
+      "AUCTION_START": "Auction Started",
+      "AUCTION_END": "Auction Ended",
+      "OUTBID": "Outbid",
+      "AUCTION_WON": "You Won",
+      "AUCTION_LOST": "You Lost",
+      "BUY_NOW": "Bought Now"
+    }
+  }
+}

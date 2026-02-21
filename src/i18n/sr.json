@@ -1,0 +1,157 @@
+{
+  "common": {
+    "appName": "Aukcija",
+    "loading": "Ucitavanje...",
+    "save": "Sacuvaj",
+    "cancel": "Otkazi",
+    "delete": "Obrisi",
+    "edit": "Izmeni",
+    "create": "Kreiraj",
+    "search": "Pretrazi",
+    "filter": "Filter",
+    "back": "Nazad",
+    "submit": "Posalji",
+    "close": "Zatvori",
+    "yes": "Da",
+    "no": "Ne",
+    "actions": "Akcije",
+    "noResults": "Nema rezultata",
+    "error": "Greska",
+    "success": "Uspesno"
+  },
+  "auth": {
+    "login": "Prijava",
+    "logout": "Odjava",
+    "email": "Email adresa",
+    "password": "Lozinka",
+    "loginButton": "Prijavite se",
+    "invalidCredentials": "Pogresna email adresa ili lozinka",
+    "accountDeactivated": "Vas nalog je deaktiviran",
+    "setPassword": "Postavi lozinku",
+    "name": "Ime i prezime",
+    "confirmPassword": "Potvrdite lozinku",
+    "activateAccount": "Aktiviraj nalog",
+    "inviteExpired": "Link za pozivnicu je istekao",
+    "accountActivated": "Nalog je uspesno aktiviran!"
+  },
+  "nav": {
+    "dashboard": "Kontrolna tabla",
+    "auctions": "Aukcije",
+    "vehicles": "Vozila",
+    "users": "Korisnici",
+    "myBids": "Moje ponude",
+    "wonAuctions": "Dobijene aukcije",
+    "notifications": "Obavestenja",
+    "profile": "Profil"
+  },
+  "auction": {
+    "title": "Aukcije",
+    "create": "Nova aukcija",
+    "status": {
+      "DRAFT": "Nacrt",
+      "LIVE": "Uzivo",
+      "ENDED": "Zavrsena",
+      "CANCELLED": "Otkazana",
+      "ARCHIVED": "Arhivirana"
+    },
+    "type": {
+      "SEALED": "Zatvorena",
+      "OPEN": "Otvorena",
+      "INDICATOR": "Sa indikatorom",
+      "ANONYMOUS": "Anonimna"
+    },
+    "typeDescription": {
+      "SEALED": "Kupci ne vide ponude drugih. Pobeduje najveca ponuda na kraju.",
+      "OPEN": "Svi vide trenutno najvecu ponudu i ko je dao.",
+      "INDICATOR": "Svaki kupac vidi samo da li je njegova ponuda trenutno najveca (zelena/crvena tacka).",
+      "ANONYMOUS": "Svi vide trenutno najvecu ponudu, ali ne i ko je dao."
+    },
+    "startTime": "Pocetak",
+    "endTime": "Kraj",
+    "currency": "Valuta",
+    "startingPrice": "Pocetna cena",
+    "reservePrice": "Rezervna cena",
+    "showReservePrice": "Prikazi rezervnu cenu",
+    "buyNow": "Kupi odmah",
+    "buyNowPrice": "Cena za kupovinu odmah",
+    "showBidCount": "Prikazi broj ponuda",
+    "currentBid": "Trenutna ponuda",
+    "yourBid": "Vasa ponuda",
+    "placeBid": "Licitiraj",
+    "bidPlaced": "Ponuda je uspesno postavljena!",
+    "bidError": "Greska pri postavljanju ponude",
+    "timeLeft": "Preostalo vreme",
+    "ended": "Zavrsena",
+    "noBids": "Nema ponuda",
+    "bids": "Ponude",
+    "winner": "Pobednik",
+    "finalPrice": "Krajnja cena",
+    "reserveNotMet": "Rezervna cena nije dostignuta",
+    "youAreHighest": "Vasa ponuda je najveca!",
+    "youAreOutbid": "Neko vas je pretekao!",
+    "buyNowConfirm": "Da li ste sigurni da zelite da kupite odmah za {price} {currency}?",
+    "sold": "Prodato",
+    "youWon": "Pobedili ste!",
+    "you": "Vi",
+    "archive": "Arhiviraj",
+    "filter": {
+      "active": "Aktivne",
+      "ended": "Zavrsene",
+      "archived": "Arhivirane"
+    },
+    "restore": "Vrati iz arhive",
+    "showArchived": "Prikazi arhivirane"
+  },
+  "vehicle": {
+    "title": "Vozila",
+    "create": "Novo vozilo",
+    "name": "Naziv",
+    "description": "Opis",
+    "specifications": "Specifikacije",
+    "images": "Slike",
+    "year": "Godiste",
+    "mileage": "Kilometraza",
+    "fuel": "Gorivo",
+    "transmission": "Menjac",
+    "engine": "Motor",
+    "power": "Snaga",
+    "color": "Boja",
+    "addImage": "Dodaj sliku",
+    "filter": {
+      "available": "Dostupna",
+      "active": "Na aukciji",
+      "sold": "Prodata"
+    }
+  },
+  "user": {
+    "title": "Korisnici",
+    "invite": "Pozovi korisnika",
+    "role": "Uloga",
+    "status": "Status",
+    "deactivate": "Deaktiviraj",
+    "activate": "Aktiviraj",
+    "roles": {
+      "ADMIN": "Administrator",
+      "BUYER": "Kupac"
+    },
+    "statuses": {
+      "PENDING": "Na cekanju",
+      "ACTIVE": "Aktivan",
+      "DEACTIVATED": "Deaktiviran"
+    }
+  },
+  "notification": {
+    "title": "Obavestenja",
+    "markAllRead": "Oznaci sve kao procitano",
+    "noNotifications": "Nema obavestenja",
+    "types": {
+      "INVITATION": "Pozivnica",
+      "AUCTION_START": "Aukcija pocela",
+      "AUCTION_END": "Aukcija zavrsena",
+      "OUTBID": "Pretekli su vas",
+      "AUCTION_WON": "Pobedili ste",
+      "AUCTION_LOST": "Niste pobedili",
+      "BUY_NOW": "Kupljeno odmah"
+    }
+  }
+}
