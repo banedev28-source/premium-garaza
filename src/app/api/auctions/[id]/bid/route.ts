@@ -4,6 +4,8 @@ import { pusher } from "@/lib/pusher-server";
 import { NextRequest, NextResponse } from "next/server";
 import { bidSchema } from "@/lib/validations";
 import { Prisma } from "@/generated/prisma/client";
+import { audit, getClientIp } from "@/lib/audit";
+import { bidLimiter, checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(
   req: NextRequest,
@@ -17,6 +19,10 @@ export async function POST(
   if (session.user.role !== "BUYER") {
     return NextResponse.json({ error: "Samo kupci mogu licitirati" }, { status: 403 });
   }
+
+  // Rate limit: 30 bids per minute per user
+  const rlResponse = await checkRateLimit(bidLimiter, session.user.id);
+  if (rlResponse) return rlResponse;
 
   const { id: auctionId } = await params;
   const body = await req.json();
@@ -244,6 +250,9 @@ export async function POST(
         ),
       ]);
     }
+
+    const ip = await getClientIp();
+    audit({ action: "BID_PLACED", userId: session.user.id, targetId: auctionId, metadata: { amount }, ip });
 
     return NextResponse.json({
       success: true,

@@ -1,7 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { publicApiLimiter, checkRateLimit } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
+  // Rate limit: 100 per minute per IP
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "127.0.0.1";
+  const rlResponse = await checkRateLimit(publicApiLimiter, ip);
+  if (rlResponse) return rlResponse;
+
   const token = req.nextUrl.searchParams.get("token");
 
   if (!token) {

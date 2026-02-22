@@ -105,7 +105,7 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                minLength={6}
+                minLength={8}
                 required
               />
             </div>
@@ -116,7 +116,7 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                minLength={6}
+                minLength={8}
                 required
               />
             </div>

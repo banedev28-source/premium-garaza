@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { pusher } from "@/lib/pusher-server";
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@/generated/prisma/client";
+import { audit, getClientIp } from "@/lib/audit";
 
 export async function POST(
   _req: NextRequest,
@@ -100,6 +101,15 @@ export async function POST(
         message: `Uspesno ste kupili ${result.auction.vehicle.name} za ${result.auction.finalPrice} ${result.auction.currency}`,
         data: { auctionId },
       },
+    });
+
+    const ip = await getClientIp();
+    audit({
+      action: "BUY_NOW",
+      userId: session.user.id,
+      targetId: auctionId,
+      metadata: { price: Number(result.auction.finalPrice) },
+      ip,
     });
 
     return NextResponse.json({ success: true });

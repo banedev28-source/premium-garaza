@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { auctionSchema } from "@/lib/validations";
 import { Prisma } from "@/generated/prisma/client";
+import { audit, getClientIp } from "@/lib/audit";
 
 export async function GET(req: NextRequest) {
   const session = await auth();
@@ -117,6 +118,9 @@ export async function POST(req: NextRequest) {
       vehicle: true,
     },
   });
+
+  const ip = await getClientIp();
+  audit({ action: "AUCTION_CREATED", userId: session.user.id, targetId: auction.id, ip });
 
   return NextResponse.json(auction, { status: 201 });
 }

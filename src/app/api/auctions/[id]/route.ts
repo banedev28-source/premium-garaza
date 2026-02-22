@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { pusher } from "@/lib/pusher-server";
 import { NextRequest, NextResponse } from "next/server";
+import { audit, getClientIp } from "@/lib/audit";
 
 export async function GET(
   _req: NextRequest,
@@ -219,6 +220,9 @@ export async function PATCH(
 
       await Promise.all(notifications);
 
+      const ip = await getClientIp();
+      audit({ action: "AUCTION_STATUS_CHANGED", userId: session.user.id, targetId: id, metadata: { from: auction.status, to: "ENDED", winnerId }, ip });
+
       // Notify losers
       const losingBidders = await prisma.bid.findMany({
         where: {
@@ -261,6 +265,11 @@ export async function PATCH(
       data: { status: body.status as "LIVE" | "CANCELLED" | "ARCHIVED" },
       include: { vehicle: true },
     });
+
+    {
+      const ip = await getClientIp();
+      audit({ action: "AUCTION_STATUS_CHANGED", userId: session.user.id, targetId: id, metadata: { from: auction.status, to: body.status }, ip });
+    }
 
     // Broadcast status change via Pusher
     if (body.status === "LIVE") {

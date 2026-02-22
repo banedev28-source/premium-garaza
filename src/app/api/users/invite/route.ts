@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import { inviteUserSchema } from "@/lib/validations";
 import { sendInviteEmail } from "@/lib/email";
+import { audit, getClientIp } from "@/lib/audit";
+import { inviteLimiter, checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -11,6 +13,10 @@ export async function POST(req: NextRequest) {
   if (!session?.user || session.user.role !== "ADMIN") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  // Rate limit: 10 invites per hour per admin
+  const rlResponse = await checkRateLimit(inviteLimiter, session.user.id);
+  if (rlResponse) return rlResponse;
 
   const body = await req.json();
   const parsed = inviteUserSchema.safeParse(body);
@@ -56,9 +62,15 @@ export async function POST(req: NextRequest) {
     // They can still use the invite link
   }
 
+  const ip = await getClientIp();
+  audit({ action: "USER_INVITED", userId: session.user.id, targetId: user.id, metadata: { email, role }, ip });
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin;
+  const inviteLink = `${appUrl}/invite/${inviteToken}`;
+
   return NextResponse.json({
     id: user.id,
     email: user.email,
-    inviteToken,
+    inviteLink,
   });
 }

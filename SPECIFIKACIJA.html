@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUKCIJA - Specifikacija</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-alt: #f8f9fa;
+      --bg-card: #ffffff;
+      --text: #1a1a2e;
+      --text-muted: #6c757d;
+      --border: #e0e0e0;
+      --primary: #2563eb;
+      --primary-light: #dbeafe;
+      --primary-dark: #1d4ed8;
+      --success: #16a34a;
+      --success-light: #dcfce7;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --danger: #dc2626;
+      --danger-light: #fee2e2;
+      --info: #0891b2;
+      --info-light: #cffafe;
+      --purple: #7c3aed;
+      --purple-light: #ede9fe;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-lg: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+      --radius: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-alt);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 50%, #3b82f6 100%);
+      color: white;
+      padding: 48px 24px 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .site-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .site-header h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .site-header p {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      position: relative;
+    }
+
+    /* ── Tab navigation ── */
+    .tab-nav {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      background: white;
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow);
+    }
+    .tab-btn {
+      padding: 16px 36px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      border-bottom: 3px solid transparent;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+    .tab-btn:hover {
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .tab-btn .tab-icon { margin-right: 8px; font-size: 1.1em; }
+
+    /* ── Content container ── */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .content-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── Section styling ── */
+    .section {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 32px;
+      margin-bottom: 28px;
+      border: 1px solid var(--border);
+    }
+    .section h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--primary-light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section h2 .icon {
+      font-size: 1.3em;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary-light);
+      border-radius: 8px;
+    }
+    .section h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin: 22px 0 10px;
+      color: var(--text);
+    }
+    .section h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 16px 0 8px;
+      color: var(--text-muted);
+    }
+    .section p, .section li {
+      color: #374151;
+      font-size: 0.95rem;
+    }
+    .section ul, .section ol {
+      padding-left: 24px;
+      margin: 8px 0 16px;
+    }
+    .section li { margin-bottom: 6px; }
+
+    /* ── Tables ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 20px;
+      font-size: 0.9rem;
+    }
+    th, td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      background: var(--bg-alt);
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    tr:hover td { background: #f9fafb; }
+
+    /* ── Badges / Tags ── */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+    .badge-primary { background: var(--primary-light); color: var(--primary-dark); }
+    .badge-success { background: var(--success-light); color: var(--success); }
+    .badge-warning { background: var(--warning-light); color: var(--warning); }
+    .badge-danger { background: var(--danger-light); color: var(--danger); }
+    .badge-info { background: var(--info-light); color: var(--info); }
+    .badge-purple { background: var(--purple-light); color: var(--purple); }
+
+    /* ── Lifecycle diagram ── */
+    .lifecycle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 20px 0;
+      padding: 24px;
+      background: var(--bg-alt);
+      border-radius: var(--radius);
+    }
+    .lifecycle-step {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-align: center;
+      min-width: 100px;
+    }
+    .lifecycle-arrow {
+      font-size: 1.4rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+    .lifecycle-branch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Code blocks ── */
+    code {
+      background: #f1f5f9;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: 'Consolas', 'Fira Code', monospace;
+      font-size: 0.85em;
+      color: #be185d;
+    }
+    pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 20px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      font-family: 'Consolas', 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      margin: 12px 0 20px;
+    }
+    pre code {
+      background: none;
+      color: inherit;
+      padding: 0;
+    }
+
+    /* ── Info boxes ── */
+    .info-box {
+      border-left: 4px solid;
+      padding: 14px 18px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin: 14px 0;
+      font-size: 0.9rem;
+    }
+    .info-box.blue { border-color: var(--primary); background: var(--primary-light); }
+    .info-box.green { border-color: var(--success); background: var(--success-light); }
+    .info-box.yellow { border-color: var(--warning); background: var(--warning-light); }
+    .info-box.red { border-color: var(--danger); background: var(--danger-light); }
+
+    /* ── Grid cards ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .mini-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      background: var(--bg-card);
+    }
+    .mini-card h4 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+      color: var(--primary-dark);
+    }
+    .mini-card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; padding: 0; }
+    .checklist li {
+      padding: 6px 0 6px 28px;
+      position: relative;
+    }
+    .checklist li::before {
+      content: '\2713';
+      position: absolute;
+      left: 0;
+      color: var(--success);
+      font-weight: 700;
+      font-size: 1.1em;
+    }
+    .checklist li.no::before {
+      content: '\2717';
+      color: var(--danger);
+    }
+
+    /* ── Feature summary table ── */
+    .feature-table td:first-child { font-weight: 600; }
+    .feature-table .status-done {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    /* ── Print styles ── */
+    @media print {
+      .tab-nav { display: none; }
+      .tab-content { display: block !important; page-break-before: always; }
+      .tab-content:first-of-type { page-break-before: avoid; }
+      .site-header { background: #2563eb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .section { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+      body { background: white; }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .site-header h1 { font-size: 1.8rem; }
+      .tab-btn { padding: 12px 16px; font-size: 0.9rem; }
+      .content-wrap { padding: 20px 14px 60px; }
+      .section { padding: 20px 16px; }
+      .lifecycle { flex-direction: column; }
+      .lifecycle-arrow { transform: rotate(90deg); }
+      table { font-size: 0.8rem; }
+      th, td { padding: 8px 10px; }
+    }
+
+    /* ── TOC ── */
+    .toc {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 28px;
+    }
+    .toc h3 {
+      font-size: 1rem;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+    .toc ol {
+      columns: 2;
+      column-gap: 32px;
+      padding-left: 20px;
+    }
+    .toc li {
+      font-size: 0.88rem;
+      margin-bottom: 4px;
+      color: var(--primary);
+      cursor: pointer;
+    }
+    .toc li:hover { text-decoration: underline; }
+    @media (max-width: 640px) {
+      .toc ol { columns: 1; }
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .comparison-card {
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+    .comparison-card:hover { border-color: var(--primary); }
+    .comparison-card h4 {
+      margin: 0 0 12px;
+      font-size: 1.1rem;
+    }
+    .comparison-card .emoji { font-size: 2rem; margin-bottom: 10px; display: block; }
+    .comparison-card p { font-size: 0.85rem; color: var(--text-muted); margin: 0; }
+
+    .footer {
+      text-align: center;
+      padding: 30px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <h1>AUKCIJA</h1>
+    <p>Platforma za online licitaciju vozila</p>
+  </header>
+
+  <!-- Tab Navigation -->
+  <nav class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('business')">
+      <span class="tab-icon">&#128188;</span> Za vlasnika biznisa
+    </button>
+    <button class="tab-btn" onclick="switchTab('technical')">
+      <span class="tab-icon">&#128187;</span> Tehnicka specifikacija
+    </button>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- BUSINESS VERSION -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <div id="tab-business" class="tab-content active">
+    <div class="content-wrap">
+
+      <!-- Intro -->
+      <div class="section">
+        <h2><span class="icon">&#127919;</span> Sta je Aukcija?</h2>
+        <p><strong>Aukcija</strong> je online platforma za licitaciju vozila. Omogucava vam da organizujete aukcije u kojima registrovani kupci licitiraju za vozila u realnom vremenu. Sve se desava preko web pregledaca &mdash; nema potrebe za instalacijom aplikacija.</p>
+        <p style="margin-top: 10px;">Platforma podrzava <strong>srpski</strong> i <strong>engleski</strong> jezik. Korisnici biraju jezik prilikom koriscenja.</p>
+      </div>
+
+      <!-- Ko koristi -->
+      <div class="section">
+        <h2><span class="icon">&#128101;</span> Ko koristi platformu?</h2>
+        <p>Postoje <strong>dve vrste korisnika</strong>:</p>
+
+        <div class="card-grid">
+          <div class="mini-card">
+            <h4>&#128119; Administrator (Vi ili vasi zaposleni)</h4>
+            <ul>
+              <li>Dodaje vozila u katalog</li>
+              <li>Kreira i pokrece aukcije</li>
+              <li>Upravlja korisnicima (poziva nove kupce, deaktivira naloge)</li>
+              <li>Ima uvid u sve podatke: sve ponude, sve korisnike, sve aukcije</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h4>&#128100; Kupac (Registrovani licitant)</h4>
+            <ul>
+              <li>Pregledaju aktivne aukcije</li>
+              <li>Licitiraju za vozila</li>
+              <li>Dobijaju obavestenja kad ih neko pretekne, kad pobede ili izgube</li>
+              <li>Pregledaju istoriju svojih ponuda i dobijenih aukcija</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registracija -->
+      <div class="section">
+        <h2><span class="icon">&#128233;</span> Kako se korisnici registruju?</h2>
+        <p>Kupci se <strong>ne registruju sami</strong>. Vi (administrator) pozivate kupce putem emaila:</p>
+        <ol>
+          <li>Unosite email adresu kupca i dodeljujete mu ulogu</li>
+          <li>Sistem automatski salje email sa pozivnicom (link vazi <strong>48 sati</strong>)</li>
+          <li>Kupac klikne na link, unese svoje ime i sifru</li>
+          <li>Nalog je aktivan &mdash; kupac moze da se uloguje i licitira</li>
+        </ol>
+        <div class="info-box yellow">
+          Ako kupac ne iskoristi pozivnicu u roku od 48h, morate poslati novu.
+        </div>
+      </div>
+
+      <!-- Katalog vozila -->
+      <div class="section">
+        <h2><span class="icon">&#128663;</span> Katalog vozila</h2>
+        <p>Pre nego sto kreirate aukciju, morate uneti vozilo u katalog. Za svako vozilo unosite:</p>
+        <ul>
+          <li><strong>Naziv</strong> (npr. "BMW 320d 2019")</li>
+          <li><strong>Opis</strong> (slobodan tekst o stanju, opremi, istoriji vozila)</li>
+          <li><strong>Fotografije</strong> (vise slika, uploadujete direktno sa racunara)</li>
+          <li><strong>Specifikacije:</strong> Godiste, Kilometraza, Gorivo, Menjac, Motor, Snaga (KS), Boja</li>
+        </ul>
+        <div class="info-box blue">
+          Vozilo koje je vec na aktivnoj aukciji ne moze se obrisati dok se aukcija ne zavrsi.
+        </div>
+      </div>
+
+      <!-- Tipovi aukcija -->
+      <div class="section">
+        <h2><span class="icon">&#128200;</span> Tipovi aukcija</h2>
+        <p>Ovo je najbitniji deo. Imate <strong>4 razlicita tipa aukcija</strong>, svaki sa drugacijim pravilima:</p>
+
+        <div class="comparison-grid">
+          <div class="comparison-card">
+            <span class="emoji">&#128483;</span>
+            <h4>OTVORENA</h4>
+            <p>Klasicna aukcija. Svi vide sve ponude i imena licitanata u realnom vremenu.</p>
+          </div>
+          <div class="comparison-card">
+            <span class="emoji">&#128274;</span>
+            <h4>ZATVORENA</h4>
+            <p>Tajno licitiranje. Niko ne vidi tudje ponude dok aukcija traje.</p>
+          </div>
+          <div class="comparison-card">
+            <span class="emoji">&#128161;</span>
+            <h4>INDIKATOR</h4>
+            <p>Ponude su tajne, ali kupci dobijaju signal da li vode ili ne.</p>
+          </div>
+          <div class="comparison-card">
+            <span class="emoji">&#128373;</span>
+            <h4>ANONIMNA</h4>
+            <p>Iznosi vidljivi, ali identiteti licitanata su sakriveni.</p>
+          </div>
+        </div>
+
+        <h3>&#128483; OTVORENA aukcija (OPEN)</h3>
+        <ul>
+          <li>Svi kupci vide <strong>sve ponude</strong> u realnom vremenu (ko je ponudio koliko)</li>
+          <li>Svaka nova ponuda mora biti <strong>veca</strong> od prethodne najvise</li>
+          <li>Kupci vide imena drugih licitanata i njihove iznose</li>
+        </ul>
+        <div class="info-box green"><strong>Idealno za:</strong> transparentne aukcije gde zelite da kupci vide konkurenciju</div>
+
+        <h3>&#128274; ZATVORENA aukcija (SEALED)</h3>
+        <ul>
+          <li>Svaki kupac vidi <strong>samo svoje ponude</strong></li>
+          <li>Ne zna koliko su drugi ponudili, niti ko je ucesnik</li>
+          <li>Ne zna ni koliko ukupno ponuda ima</li>
+          <li>Posle zavrsetka aukcije, sve se otkriva</li>
+        </ul>
+        <div class="info-box green"><strong>Idealno za:</strong> situacije gde zelite da svaki kupac ponudi svoju realnu cenu bez uticaja drugih</div>
+
+        <h3>&#128161; INDIKATOR aukcija (INDICATOR)</h3>
+        <ul>
+          <li>Svaki kupac vidi samo <strong>svoje ponude</strong></li>
+          <li>Ali dobija <strong>signal</strong> (zeleno/crveno svetlo):
+            <ul>
+              <li><span style="color: var(--success); font-weight:700;">Zeleno</span> = vasa ponuda je trenutno najveca</li>
+              <li><span style="color: var(--danger); font-weight:700;">Crveno</span> = neko vas je pretekao</li>
+            </ul>
+          </li>
+          <li>Posle zavrsetka, sve se otkriva</li>
+        </ul>
+        <div class="info-box green"><strong>Idealno za:</strong> kad zelite tajnost ali i da kupci znaju da li treba da povecaju ponudu</div>
+
+        <h3>&#128373; ANONIMNA aukcija (ANONYMOUS)</h3>
+        <ul>
+          <li>Svi kupci vide <strong>iznose svih ponuda</strong> u realnom vremenu</li>
+          <li>Ali <strong>ne vide ko je ponudio</strong> (prikazano kao "---")</li>
+          <li>Svaka nova ponuda mora biti veca od prethodne</li>
+          <li>Posle zavrsetka, identiteti se otkrivaju</li>
+        </ul>
+        <div class="info-box green"><strong>Idealno za:</strong> transparentnost u iznosima, ali zastita identiteta licitanata</div>
+      </div>
+
+      <!-- Kreiranje aukcije -->
+      <div class="section">
+        <h2><span class="icon">&#10133;</span> Kreiranje aukcije</h2>
+        <p>Kad kreirate novu aukciju, birate:</p>
+        <table>
+          <tr><th>Podesavanje</th><th>Objasnjenje</th></tr>
+          <tr><td><strong>Vozilo</strong></td><td>Koje vozilo se licitira</td></tr>
+          <tr><td><strong>Tip aukcije</strong></td><td>OTVORENA, ZATVORENA, INDIKATOR ili ANONIMNA</td></tr>
+          <tr><td><strong>Valuta</strong></td><td>RSD (dinari) ili EUR (evra)</td></tr>
+          <tr><td><strong>Pocetna cena</strong></td><td>Minimalna cena za prvu ponudu (opciono)</td></tr>
+          <tr><td><strong>Rezervna cena</strong></td><td>Minimalna cena za prodaju &mdash; ako nijedna ponuda ne dostigne ovaj iznos, vozilo se NE prodaje</td></tr>
+          <tr><td><strong>Prikazi rezervnu cenu</strong></td><td>Da li kupci vide kolika je rezervna cena</td></tr>
+          <tr><td><strong>Pocetak aukcije</strong></td><td>Datum i vreme kad aukcija automatski postaje aktivna</td></tr>
+          <tr><td><strong>Kraj aukcije</strong></td><td>Datum i vreme kad se aukcija automatski zavrsava</td></tr>
+          <tr><td><strong>Kupi odmah (Buy Now)</strong></td><td>Opciono &mdash; omogucava kupcu da odmah kupi po fiksnoj ceni, cime se aukcija zavrsava</td></tr>
+        </table>
+      </div>
+
+      <!-- Zivotni ciklus -->
+      <div class="section">
+        <h2><span class="icon">&#128260;</span> Zivotni ciklus aukcije</h2>
+        <p>Svaka aukcija prolazi kroz sledece faze:</p>
+
+        <div class="lifecycle">
+          <div class="lifecycle-step" style="background: var(--info-light); color: var(--info);">NACRT</div>
+          <span class="lifecycle-arrow">&rarr;</span>
+          <div class="lifecycle-step" style="background: var(--success-light); color: var(--success);">AKTIVNA</div>
+          <span class="lifecycle-arrow">&rarr;</span>
+          <div class="lifecycle-step" style="background: var(--warning-light); color: var(--warning);">ZAVRSENA</div>
+          <span class="lifecycle-arrow">&rarr;</span>
+          <div class="lifecycle-step" style="background: var(--purple-light); color: var(--purple);">ARHIVIRANA</div>
+        </div>
+        <div class="lifecycle" style="margin-top: -12px; padding-top: 12px;">
+          <div class="lifecycle-branch">
+            <span style="font-size: 0.85rem;">&darr; (moze se otkazati iz Nacrta ili Aktivne)</span>
+          </div>
+          <div class="lifecycle-step" style="background: var(--danger-light); color: var(--danger);">OTKAZANA</div>
+          <span class="lifecycle-arrow">&rarr;</span>
+          <div class="lifecycle-step" style="background: var(--purple-light); color: var(--purple);">ARHIVIRANA</div>
+        </div>
+
+        <ol>
+          <li><strong>NACRT</strong> &mdash; Aukcija je kreirana ali jos nije pocela. Mozete je menjati.</li>
+          <li><strong>AKTIVNA</strong> &mdash; Aukcija je u toku. Kupci mogu da licitiraju. Ne mozete menjati detalje.</li>
+          <li><strong>ZAVRSENA</strong> &mdash; Vreme je isteklo (ili ste je vi rucno zavrsili). Sistem automatski odredjuje pobednika.</li>
+          <li><strong>ARHIVIRANA</strong> &mdash; Sacuvana u arhivu. Zavrsna faza.</li>
+          <li><strong>OTKAZANA</strong> &mdash; Otkazana (moze se otkazati iz nacrta ili dok je aktivna).</li>
+        </ol>
+        <div class="info-box blue">
+          Prelazak iz nacrta u aktivnu moze biti <strong>automatski</strong> (kad dodje zakazano vreme) ili <strong>rucno</strong> (vi kliknete dugme). Isto vazi i za zavrsetak.
+        </div>
+      </div>
+
+      <!-- Licitiranje -->
+      <div class="section">
+        <h2><span class="icon">&#128176;</span> Kako radi licitiranje?</h2>
+
+        <h3>Postavljanje ponude</h3>
+        <ol>
+          <li>Kupac otvori aktivnu aukciju</li>
+          <li>Unese iznos u polje za ponudu</li>
+          <li>Klikne "Licitiraj"</li>
+          <li>Sistem proverava:
+            <ul>
+              <li>Da li je aukcija jos uvek aktivna?</li>
+              <li>Da li je iznos veci od pocetne cene?</li>
+              <li>Da li je iznos veci od trenutno najvise ponude? (osim kod ZATVORENE aukcije)</li>
+            </ul>
+          </li>
+          <li>Ako je sve ispravno, ponuda se belezi</li>
+        </ol>
+
+        <h3>Kupi odmah (Buy Now)</h3>
+        <p>Ako ste omogucili ovu opciju:</p>
+        <ol>
+          <li>Kupac vidi dugme "Kupi odmah za X EUR/RSD"</li>
+          <li>Klikom na dugme, aukcija se <strong>odmah zavrsava</strong></li>
+          <li>Taj kupac je pobednik po fiksnoj ceni</li>
+          <li>Svi ostali licitanti dobijaju obavestenje</li>
+        </ol>
+
+        <h3>Odredjivanje pobednika</h3>
+        <table>
+          <tr><th>Situacija</th><th>Rezultat</th></tr>
+          <tr><td>Najvisa ponuda &ge; rezervna cena</td><td><span class="badge badge-success">Pobednik odredjen</span></td></tr>
+          <tr><td>Najvisa ponuda &lt; rezervna cena</td><td><span class="badge badge-danger">Nema pobednika</span> (vozilo nije prodato)</td></tr>
+          <tr><td>Nema rezervne cene</td><td><span class="badge badge-success">Onaj ko ponudio najvise dobija vozilo</span></td></tr>
+          <tr><td>Nema nijedne ponude</td><td><span class="badge badge-danger">Nema pobednika</span></td></tr>
+          <tr><td>Kupac koristi Buy Now</td><td><span class="badge badge-success">Odmah pobednik po fiksnoj ceni</span></td></tr>
+        </table>
+      </div>
+
+      <!-- Obavestenja -->
+      <div class="section">
+        <h2><span class="icon">&#128276;</span> Obavestenja</h2>
+        <p>Kupci i administratori dobijaju obavestenja u realnom vremenu (bez osvezavanja stranice):</p>
+
+        <h3>Za kupce:</h3>
+        <table>
+          <tr><th>Situacija</th><th>Obavestenje</th></tr>
+          <tr><td>Neko vas je pretekao</td><td>"Neko je ponudio vise od vas na aukciji za [vozilo]"</td></tr>
+          <tr><td>Pobedili ste</td><td>"Cestitamo! Pobedili ste na aukciji za [vozilo]" + email</td></tr>
+          <tr><td>Izgubili ste</td><td>"Aukcija za [vozilo] je zavrsena. Niste pobedili."</td></tr>
+          <tr><td>Kupili ste odmah</td><td>"Uspesno ste kupili [vozilo] po ceni od X"</td></tr>
+        </table>
+
+        <h3>Za administratore:</h3>
+        <table>
+          <tr><th>Situacija</th><th>Obavestenje</th></tr>
+          <tr><td>Nova ponuda</td><td>"Nova ponuda na aukciji za [vozilo]: X EUR/RSD"</td></tr>
+        </table>
+
+        <p style="margin-top: 14px;">Obavestenja se prikazuju:</p>
+        <ul>
+          <li><strong>Zvonce</strong> u gornjem desnom uglu ekrana (sa brojacem neprocitanih)</li>
+          <li><strong>Email</strong> (za pobedu na aukciji i pozivnice)</li>
+        </ul>
+      </div>
+
+      <!-- Vidljivost po tipu -->
+      <div class="section">
+        <h2><span class="icon">&#128065;</span> Sta vidi kupac u realnom vremenu?</h2>
+        <p>Zavisi od tipa aukcije:</p>
+        <table>
+          <tr>
+            <th>Informacija</th>
+            <th>&#128483; Otvorena</th>
+            <th>&#128274; Zatvorena</th>
+            <th>&#128161; Indikator</th>
+            <th>&#128373; Anonimna</th>
+          </tr>
+          <tr><td>Iznosi svih ponuda</td><td><span class="badge badge-success">Da</span></td><td><span class="badge badge-danger">Ne</span></td><td><span class="badge badge-danger">Ne</span></td><td><span class="badge badge-success">Da</span></td></tr>
+          <tr><td>Imena licitanata</td><td><span class="badge badge-success">Da</span></td><td><span class="badge badge-danger">Ne</span></td><td><span class="badge badge-danger">Ne</span></td><td><span class="badge badge-danger">Ne</span></td></tr>
+          <tr><td>Najvisa ponuda</td><td><span class="badge badge-success">Da</span></td><td><span class="badge badge-danger">Ne</span></td><td><span class="badge badge-success">Da</span></td><td><span class="badge badge-success">Da</span></td></tr>
+          <tr><td>Broj ponuda</td><td><span class="badge badge-success">Da</span></td><td><span class="badge badge-danger">Ne</span></td><td><span class="badge badge-danger">Ne</span></td><td><span class="badge badge-success">Da</span></td></tr>
+          <tr><td>Moj status (vodim/ne vodim)</td><td><span class="badge badge-success">Da</span></td><td><span class="badge badge-danger">Ne</span></td><td><span class="badge badge-success">Da</span></td><td><span class="badge badge-success">Da</span></td></tr>
+          <tr><td>Moje ponude</td><td><span class="badge badge-success">Da</span></td><td><span class="badge badge-success">Da</span></td><td><span class="badge badge-success">Da</span></td><td><span class="badge badge-success">Da</span></td></tr>
+        </table>
+        <div class="info-box blue">
+          <strong>Posle zavrsetka aukcije:</strong> SVE se otkriva svim ucesnicima &mdash; sve ponude, sva imena, pobednik.
+          <br>Kupci koji <strong>nisu ucestvovali</strong> u zavrsenoj aukciji ne vide detalje ponuda.
+        </div>
+      </div>
+
+      <!-- Admin panel -->
+      <div class="section">
+        <h2><span class="icon">&#9881;</span> Kontrolna tabla administratora</h2>
+
+        <div class="card-grid">
+          <div class="mini-card">
+            <h4>&#128202; Pocetna strana (Dashboard)</h4>
+            <p>Broj aukcija po statusu (nacrt, aktivne, zavrsene, otkazane). Lista poslednjih 10 aukcija sa statusom.</p>
+          </div>
+          <div class="mini-card">
+            <h4>&#128203; Upravljanje aukcijama</h4>
+            <p>Pregled svih aukcija sa filterom. Kreiranje nove aukcije. Promena statusa. Detalji sa svim ponudama i pobednikom.</p>
+          </div>
+          <div class="mini-card">
+            <h4>&#128663; Upravljanje vozilima</h4>
+            <p>Katalog sa filterom (dostupna / na aukciji / prodata). Dodavanje, izmena i brisanje vozila sa fotografijama.</p>
+          </div>
+          <div class="mini-card">
+            <h4>&#128101; Upravljanje korisnicima</h4>
+            <p>Lista korisnika sa statusom. Pozivanje novih, deaktivacija i brisanje. Statistika po korisniku.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buyer screens -->
+      <div class="section">
+        <h2><span class="icon">&#128100;</span> Sta kupac vidi?</h2>
+
+        <h3>Lista aukcija</h3>
+        <ul>
+          <li>Samo aktivne i zavrsene aukcije (nacrte ne vidi)</li>
+          <li>Pretraga po nazivu vozila</li>
+          <li>Filter: aktivne / zavrsene</li>
+        </ul>
+
+        <h3>Detalj aukcije</h3>
+        <ul>
+          <li>Fotografije vozila (galerija sa strelicama)</li>
+          <li>Specifikacije vozila</li>
+          <li>Trenutno stanje licitacije (zavisno od tipa aukcije)</li>
+          <li>Polje za unos ponude + dugme za licitiranje</li>
+          <li>Dugme "Kupi odmah" (ako je omoguceno)</li>
+          <li>Tajmer: odbrojava sate, minute, sekunde do kraja</li>
+        </ul>
+
+        <h3>Moje ponude</h3>
+        <ul>
+          <li>Istorija svih ponuda na svim aukcijama</li>
+          <li>Grupisano po aukciji &mdash; vidi svoju najvecu ponudu za svaku</li>
+        </ul>
+
+        <h3>Dobijene aukcije</h3>
+        <ul>
+          <li>Lista aukcija koje je kupac dobio</li>
+          <li>Zavrsna cena i datum pobede</li>
+        </ul>
+      </div>
+
+      <!-- Automatizacija -->
+      <div class="section">
+        <h2><span class="icon">&#9201;</span> Automatizacija</h2>
+        <p>Sistem automatski:</p>
+        <ul class="checklist">
+          <li><strong>Pokrece aukcije</strong> kad dodje zakazano vreme pocetka (proverava svaki minut)</li>
+          <li><strong>Zavrsava aukcije</strong> kad dodje zakazano vreme zavrsetka</li>
+          <li><strong>Odredjuje pobednika</strong> na osnovu ponuda i rezervne cene</li>
+          <li><strong>Salje obavestenja</strong> pobedniku i gubitnicima (u aplikaciji i emailom)</li>
+        </ul>
+        <div class="info-box green">
+          Ne morate rucno pratiti vreme &mdash; sistem sve radi sam.
+        </div>
+      </div>
+
+      <!-- Valute -->
+      <div class="section">
+        <h2><span class="icon">&#128178;</span> Valute</h2>
+        <p>Podrzane valute:</p>
+        <ul>
+          <li><strong>RSD</strong> &mdash; Srpski dinar</li>
+          <li><strong>EUR</strong> &mdash; Evro</li>
+        </ul>
+        <p>Valuta se bira prilikom kreiranja aukcije i sve ponude na toj aukciji su u toj valuti.</p>
+      </div>
+
+      <!-- Bezbednost -->
+      <div class="section">
+        <h2><span class="icon">&#128272;</span> Bezbednost</h2>
+        <ul class="checklist">
+          <li>Kupci ne mogu da pristupe administratorskim stranicama</li>
+          <li>Samo administrator moze da kreira aukcije, vozila i poziva korisnike</li>
+          <li>Ponude su zasticene od istovremenih duplikata (ako dva kupca kliknu u istom trenutku, sistem ispravno obradjuje obe)</li>
+          <li>Upload fotografija je ogranicen na slike (JPEG, PNG, WebP, GIF) do 5MB</li>
+          <li>Deaktivirani korisnici ne mogu da se uloguju</li>
+        </ul>
+      </div>
+
+      <!-- Rezime -->
+      <div class="section">
+        <h2><span class="icon">&#9989;</span> Rezime svih funkcionalnosti</h2>
+        <table class="feature-table">
+          <tr><th>Funkcionalnost</th><th>Status</th></tr>
+          <tr><td>4 tipa aukcija sa razlicitim pravilima</td><td class="status-done">&#10003; Implementirano</td></tr>
+          <tr><td>Automatsko pokretanje i zavrsetak aukcija</td><td class="status-done">&#10003; Implementirano</td></tr>
+          <tr><td>Odredjivanje pobednika sa rezervnom cenom</td><td class="status-done">&#10003; Implementirano</td></tr>
+          <tr><td>Kupi odmah (Buy Now)</td><td class="status-done">&#10003; Implementirano</td></tr>
+          <tr><td>Obavestenja u realnom vremenu</td><td class="status-done">&#10003; Implementirano</td></tr>
+          <tr><td>Email obavestenja (pozivnice, pobeda)</td><td class="status-done">&#10003; Implementirano</td></tr>
+          <tr><td>Upravljanje korisnicima sa pozivnicama</td><td class="status-done">&#10003; Implementirano</td></tr>
+          <tr><td>Katalog vozila sa fotografijama</td><td class="status-done">&#10003; Implementirano</td></tr>
+          <tr><td>Dvojezicnost (srpski / engleski)</td><td class="status-done">&#10003; Implementirano</td></tr>
+          <tr><td>Kontrolna tabla za administratora</td><td class="status-done">&#10003; Implementirano</td></tr>
+          <tr><td>Istorija ponuda za kupce</td><td class="status-done">&#10003; Implementirano</td></tr>
+          <tr><td>Filtriranje i pretraga aukcija</td><td class="status-done">&#10003; Implementirano</td></tr>
+          <tr><td>Zastita privatnosti ponuda po tipu aukcije</td><td class="status-done">&#10003; Implementirano</td></tr>
+          <tr><td>Automatske notifikacije (preteknut, pobeda, gubitak)</td><td class="status-done">&#10003; Implementirano</td></tr>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- TECHNICAL VERSION -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <div id="tab-technical" class="tab-content">
+    <div class="content-wrap">
+
+      <!-- TOC -->
+      <div class="toc">
+        <h3>Sadrzaj</h3>
+        <ol>
+          <li>Pregled sistema</li>
+          <li>Korisnicke role</li>
+          <li>Autentifikacija i autorizacija</li>
+          <li>Tipovi aukcija</li>
+          <li>Zivotni ciklus aukcije</li>
+          <li>Licitiranje (Bidding)</li>
+          <li>Pristup podacima aukcije</li>
+          <li>Upravljanje vozilima</li>
+          <li>Upravljanje korisnicima</li>
+          <li>Notifikacije</li>
+          <li>Real-time komunikacija (Pusher)</li>
+          <li>Admin interfejs</li>
+          <li>Buyer interfejs</li>
+          <li>Internacionalizacija (i18n)</li>
+          <li>Tema (Theming)</li>
+          <li>Baza podataka (Schema)</li>
+          <li>Odredjivanje pobednika</li>
+          <li>Validacione scheme (Zod)</li>
+          <li>Environment varijable</li>
+          <li>Deployment</li>
+          <li>Test pokrivenost</li>
+          <li>Seed podaci</li>
+        </ol>
+      </div>
+
+      <!-- 1. Pregled sistema -->
+      <div class="section">
+        <h2><span class="icon">1</span> Pregled sistema</h2>
+        <p><strong>Aukcija</strong> je web platforma za licitaciju vozila u realnom vremenu. Podrzava 4 tipa aukcija sa razlicitim nivoima privatnosti, dvojezicni interfejs (srpski/engleski), real-time obavestavanja i potpun administrativni panel.</p>
+        <p style="margin-top: 10px;"><strong>Tehnoloski stek:</strong></p>
+        <ul>
+          <li>Next.js 16 (App Router, Turbopack)</li>
+          <li>Prisma 7 + PostgreSQL</li>
+          <li>NextAuth v5 beta (JWT)</li>
+          <li>Pusher WebSocket</li>
+          <li>shadcn/ui + Tailwind CSS v4</li>
+          <li>Zod v4 (validacija)</li>
+          <li>Resend (email)</li>
+          <li>Vitest (testovi)</li>
+        </ul>
+      </div>
+
+      <!-- 2. Korisnicke role -->
+      <div class="section">
+        <h2><span class="icon">2</span> Korisnicke role</h2>
+
+        <h3>2.1 ADMIN</h3>
+        <ul class="checklist">
+          <li>Upravlja svim aukcijama, vozilima i korisnicima</li>
+          <li>Vidi sve podatke bez ogranicenja (sve bidove, identitete, rezultate)</li>
+          <li>Moze kreirati, menjati status i arhivirati aukcije</li>
+          <li>Moze pozivati nove korisnike (ADMIN ili BUYER)</li>
+          <li>Moze aktivirati/deaktivirati i brisati korisnike</li>
+          <li>Moze upload-ovati slike vozila</li>
+          <li>Prima notifikacije o svakom novom bidu</li>
+          <li>Forsiran light tema (bez dark mode)</li>
+        </ul>
+
+        <h3>2.2 BUYER (Kupac)</h3>
+        <ul class="checklist">
+          <li>Moze pregledati LIVE i ENDED aukcije</li>
+          <li>Moze licitirati na LIVE aukcije</li>
+          <li>Moze koristiti Buy Now opciju</li>
+          <li>Vidi ogranicene podatke zavisno od tipa aukcije</li>
+          <li>Prima notifikacije: outbid, pobeda, gubitak, buy now</li>
+          <li>Ima dark/light temu</li>
+          <li>Pristupa stranicama: Aukcije, Moje ponude, Osvojene aukcije</li>
+        </ul>
+      </div>
+
+      <!-- 3. Auth -->
+      <div class="section">
+        <h2><span class="icon">3</span> Autentifikacija i autorizacija</h2>
+
+        <h3>3.1 Prijava (Login)</h3>
+        <ul>
+          <li><strong>URL:</strong> <code>/login</code></li>
+          <li><strong>Polja:</strong> Email, Lozinka (min 6 karaktera)</li>
+          <li><strong>Ponasanje:</strong> NextAuth Credentials provajder, bcrypt verifikacija</li>
+          <li><strong>Uslovi:</strong> Korisnik mora postojati, imati passwordHash, status mora biti <code>ACTIVE</code></li>
+          <li><strong>Posle logina:</strong> ADMIN &rarr; <code>/admin/dashboard</code>, BUYER &rarr; <code>/auctions</code></li>
+        </ul>
+
+        <h3>3.2 Pozivnica (Invite) sistem</h3>
+        <ul>
+          <li><strong>Tok:</strong> Admin poziva &rarr; Email sa linkom &rarr; Korisnik postavlja lozinku &rarr; Nalog aktivan</li>
+          <li><strong>Token:</strong> 64-hex random, istice za 48 sati</li>
+          <li><strong>Validacija tokena:</strong> <code>GET /api/invite/validate?token=...</code></li>
+          <li><strong>Prihvatanje pozivnice:</strong> <code>POST /api/invite/accept</code> &mdash; Body: <code>{ token, password, name }</code></li>
+        </ul>
+
+        <h3>3.3 Middleware zastita ruta</h3>
+        <ul>
+          <li><strong>Javne rute:</strong> <code>/login</code>, <code>/invite/*</code>, <code>/api/auth/*</code>, <code>/api/invite/*</code></li>
+          <li><strong>Zasticene rute:</strong> Sve ostalo zahteva autentifikaciju</li>
+          <li><strong>Admin rute:</strong> <code>/admin/*</code> dostupne samo ADMIN roli</li>
+          <li><strong>Izuzete iz middleware-a:</strong> <code>_next/static</code>, <code>_next/image</code>, <code>favicon.ico</code>, <code>api/pusher</code>, <code>api/cron</code></li>
+        </ul>
+
+        <h3>3.4 Sesija</h3>
+        <ul>
+          <li>JWT strategija, max 30 dana</li>
+          <li>Token sadrzi: <code>id, email, name, role, status, language</code></li>
+        </ul>
+      </div>
+
+      <!-- 4. Tipovi aukcija -->
+      <div class="section">
+        <h2><span class="icon">4</span> Tipovi aukcija</h2>
+
+        <h3>4.1 SEALED (Zatvorena)</h3>
+        <ul>
+          <li>Bidovi potpuno tajni dok je aukcija LIVE</li>
+          <li>Kupac vidi SAMO sopstvene bidove</li>
+          <li>Nema prikaza najvise ponude, nema indikatora</li>
+          <li>Dozvoljeno dati bid MANJI od trenutno najviseg</li>
+          <li>Nema outbid notifikacija</li>
+          <li>Pusher: samo <code>private-user-{id}</code> bid-placed event</li>
+          <li>Posle ENDED: svi podaci se otkrivaju ucesnicima</li>
+        </ul>
+
+        <h3>4.2 OPEN (Otvorena)</h3>
+        <ul>
+          <li>Svi bidovi javno vidljivi sa identitetom biddera</li>
+          <li>Bid mora biti STROGO VECI od trenutno najviseg</li>
+          <li>Pusher: <code>auction-{id}</code> new-bid (sa bidderId, bidderName) + <code>private-user-{id}</code> bid-placed</li>
+          <li>Outbid notifikacija za prethodno najviseg biddera</li>
+        </ul>
+
+        <h3>4.3 INDICATOR (Sa indikatorom)</h3>
+        <ul>
+          <li>Kupac vidi SAMO sopstvene bidove</li>
+          <li>Dobija indikator: zeleno (najvisci) ili crveno (pretecen)</li>
+          <li>Vidi iznos trenutno najviseg bida</li>
+          <li>Bid mora biti STROGO VECI od najviseg</li>
+          <li>Pusher: <code>private-user-{id}</code> bid-indicator (<code>isHighest</code>, <code>highestBid</code>, <code>bidCount</code>) svakom bidderu</li>
+        </ul>
+
+        <h3>4.4 ANONYMOUS (Anonimna)</h3>
+        <ul>
+          <li>Svi bidovi vidljivi, ali tudji identiteti sakriveni (prikazano kao "---")</li>
+          <li>Bid mora biti STROGO VECI od najviseg</li>
+          <li>Pusher: <code>auction-{id}</code> new-bid (BEZ bidderId/bidderName) + <code>private-user-{id}</code> bid-indicator</li>
+        </ul>
+      </div>
+
+      <!-- 5. Zivotni ciklus -->
+      <div class="section">
+        <h2><span class="icon">5</span> Zivotni ciklus aukcije</h2>
+
+        <h3>5.1 Statusi</h3>
+        <pre><code>DRAFT &rarr; LIVE &rarr; ENDED &rarr; ARCHIVED
+  &darr;              &darr;
+CANCELLED &mdash;&rarr; ARCHIVED</code></pre>
+
+        <h3>5.2 Dozvoljena stanja</h3>
+        <table>
+          <tr><th>Iz</th><th>U</th></tr>
+          <tr><td>DRAFT</td><td>LIVE, CANCELLED</td></tr>
+          <tr><td>LIVE</td><td>ENDED, CANCELLED</td></tr>
+          <tr><td>ENDED</td><td>ARCHIVED</td></tr>
+          <tr><td>CANCELLED</td><td>ARCHIVED</td></tr>
+          <tr><td>ARCHIVED</td><td><em>terminalni status</em></td></tr>
+        </table>
+
+        <h3>5.3 Automatski lifecycle (Cron)</h3>
+        <ul>
+          <li><strong>Endpoint:</strong> <code>GET /api/cron/auction-lifecycle</code></li>
+          <li><strong>Ucestalost:</strong> Svaki minut (Vercel Cron)</li>
+          <li><strong>Autentifikacija:</strong> <code>Authorization: Bearer {CRON_SECRET}</code></li>
+          <li><strong>Radnje:</strong>
+            <ol>
+              <li>Nalazi DRAFT aukcije gde <code>startTime &le; now</code> &rarr; status LIVE, Pusher broadcast <code>auction-started</code></li>
+              <li>Nalazi LIVE aukcije gde <code>endTime &le; now</code> &rarr; Odredjuje pobednika, status ENDED, notifikacije (AUCTION_WON + AUCTION_LOST)</li>
+            </ol>
+          </li>
+        </ul>
+
+        <h3>5.4 Manuelna promena statusa (Admin PATCH)</h3>
+        <ul>
+          <li>Iste validacije tranzicija</li>
+          <li>Koristi optimistic locking (<code>where: { id, status: currentStatus }</code>)</li>
+          <li>Kod ENDED: ista logika za odredjivanje pobednika i notifikacije</li>
+        </ul>
+      </div>
+
+      <!-- 6. Bidding -->
+      <div class="section">
+        <h2><span class="icon">6</span> Licitiranje (Bidding)</h2>
+
+        <h3>6.1 Postavljanje bida</h3>
+        <ul>
+          <li><strong>Endpoint:</strong> <code>POST /api/auctions/{id}/bid</code></li>
+          <li><strong>Dozvoljeno:</strong> Samo BUYER (403 za ADMIN)</li>
+          <li><strong>Body:</strong> <code>{ amount: number }</code> &mdash; mora biti pozitivan (Zod validacija)</li>
+          <li><strong>Transakcija:</strong> Serializable isolation level (zastita od race condition-a)</li>
+        </ul>
+
+        <h3>6.2 Validacije pre kreiranja bida</h3>
+        <ol>
+          <li>Sesija postoji i user je BUYER</li>
+          <li>Amount je pozitivan broj</li>
+          <li>Aukcija postoji</li>
+          <li>Aukcija je LIVE</li>
+          <li>Aukcija nije istekla (<code>now &le; endTime</code>)</li>
+          <li>Amount &ge; startingPrice (ako je definisana)</li>
+          <li>Za non-SEALED: amount &gt; trenutno najvisi bid</li>
+        </ol>
+
+        <h3>6.3 Uspesna licitacija</h3>
+        <ul>
+          <li>Kreira bid sa <code>Prisma.Decimal</code> za preciznost</li>
+          <li>Vraca: <code>{ success: true, bid: { id, amount, createdAt } }</code></li>
+          <li>Pusher broadcast zavisno od tipa aukcije (vidi sekciju 4)</li>
+          <li>Outbid notifikacija (za non-SEALED): trazi 2 najvisca bida, ako prethodni najvisci postoji i nije isti korisnik &rarr; OUTBID notifikacija</li>
+          <li>Obavestava sve ACTIVE admine o novom bidu (batch <code>createMany</code> + paralelni Pusher)</li>
+        </ul>
+
+        <h3>6.4 Buy Now</h3>
+        <ul>
+          <li><strong>Endpoint:</strong> <code>POST /api/auctions/{id}/buy-now</code></li>
+          <li><strong>Uslovi:</strong> Sesija (BUYER), aukcija LIVE, buyNowEnabled=true, buyNowPrice definisana</li>
+          <li><strong>U transakciji:</strong> Kreira bid sa <code>isBuyNow: true</code>, azurira aukciju: status=ENDED, winnerId=buyer, finalPrice=buyNowPrice</li>
+          <li><strong>Posle transakcije:</strong> Pusher <code>auction-ended</code> sa <code>buyNow: true</code>, notifikacija AUCTION_END za ostale biddere, notifikacija BUY_NOW za kupca</li>
+        </ul>
+      </div>
+
+      <!-- 7. GET pristup -->
+      <div class="section">
+        <h2><span class="icon">7</span> Pristup podacima aukcije (GET)</h2>
+
+        <h3>7.1 Lista aukcija</h3>
+        <ul>
+          <li><strong>Endpoint:</strong> <code>GET /api/auctions?status=...&amp;page=1&amp;limit=50</code></li>
+          <li><strong>Admin:</strong> Vidi sve statuse</li>
+          <li><strong>Buyer:</strong> Vidi samo LIVE i ENDED</li>
+          <li><strong>Paginacija:</strong> page (default 1), limit (default 50, max 100)</li>
+        </ul>
+
+        <h3>7.2 Detalj aukcije</h3>
+        <table>
+          <tr><th>Situacija</th><th>Bids</th><th>HighestBid</th><th>UserIsHighest</th><th>Identiteti</th></tr>
+          <tr><td>ADMIN</td><td>Svi</td><td>-</td><td>-</td><td>Svi</td></tr>
+          <tr><td>SEALED + LIVE</td><td>Samo sopstveni</td><td>null</td><td>null</td><td>Sopstveni</td></tr>
+          <tr><td>SEALED + ENDED</td><td>Svi</td><td>Da</td><td>Da</td><td>Svi</td></tr>
+          <tr><td>INDICATOR + LIVE</td><td>Samo sopstveni</td><td>Da</td><td>Da/Ne</td><td>Sopstveni</td></tr>
+          <tr><td>INDICATOR + ENDED</td><td>Svi</td><td>Da</td><td>Da</td><td>Svi</td></tr>
+          <tr><td>ANONYMOUS + LIVE</td><td>Svi</td><td>Da</td><td>Da</td><td>Tuji = "---"</td></tr>
+          <tr><td>ANONYMOUS + ENDED</td><td>Svi</td><td>Da</td><td>Da</td><td>Svi</td></tr>
+          <tr><td>OPEN + LIVE/ENDED</td><td>Svi</td><td>Da</td><td>Da</td><td>Svi</td></tr>
+          <tr><td>ENDED + nije ucestovao</td><td>[]</td><td>null</td><td>null</td><td>Nista</td></tr>
+        </table>
+      </div>
+
+      <!-- 8. Vozila -->
+      <div class="section">
+        <h2><span class="icon">8</span> Upravljanje vozilima</h2>
+
+        <h3>8.1 Kreiranje vozila</h3>
+        <ul>
+          <li><strong>Endpoint:</strong> <code>POST /api/vehicles</code> (samo ADMIN)</li>
+          <li><strong>Polja:</strong> <code>name</code> (obavezno), <code>description</code>, <code>specifications</code> (JSON: year, mileage, fuel, transmission, engine, power, color), <code>images</code> (niz URL-ova)</li>
+          <li><strong>Validacija:</strong> Zod <code>vehicleSchema</code></li>
+        </ul>
+
+        <h3>8.2 Azuriranje / Brisanje</h3>
+        <ul>
+          <li><strong>PUT:</strong> <code>/api/vehicles/{id}</code> (samo ADMIN)</li>
+          <li><strong>DELETE:</strong> <code>/api/vehicles/{id}</code> (samo ADMIN, vozilo NE SME imati aukciju)</li>
+        </ul>
+
+        <h3>8.3 Upload slika</h3>
+        <ul>
+          <li><strong>Endpoint:</strong> <code>POST /api/upload</code> (samo ADMIN)</li>
+          <li><strong>Tip:</strong> samo <code>image/jpeg</code>, <code>image/png</code>, <code>image/webp</code>, <code>image/gif</code></li>
+          <li><strong>Max velicina:</strong> 5MB po fajlu</li>
+          <li><strong>Storage:</strong> <code>public/uploads/{random-hex}.{ext}</code></li>
+        </ul>
+      </div>
+
+      <!-- 9. Korisnici -->
+      <div class="section">
+        <h2><span class="icon">9</span> Upravljanje korisnicima</h2>
+
+        <h3>9.1 Lista korisnika</h3>
+        <ul>
+          <li><code>GET /api/users</code> (samo ADMIN)</li>
+          <li>Vraca: id, email, name, role, status, createdAt, inviter info, brojac bidova i pobeda</li>
+        </ul>
+
+        <h3>9.2 Pozivanje</h3>
+        <ul>
+          <li><code>POST /api/users/invite</code></li>
+          <li>Body: <code>{ email, role: "ADMIN"|"BUYER", name? }</code></li>
+          <li>Kreira PENDING korisnika, generise 48h token, salje email</li>
+        </ul>
+
+        <h3>9.3 Promena statusa</h3>
+        <ul>
+          <li><code>PATCH /api/users/{id}</code> &mdash; Body: <code>{ status: "ACTIVE"|"DEACTIVATED" }</code></li>
+          <li>Deaktivirani korisnici ne mogu se ulogovati</li>
+        </ul>
+
+        <h3>9.4 Brisanje</h3>
+        <ul>
+          <li><code>DELETE /api/users/{id}</code> (admin ne moze obrisati sam sebe)</li>
+          <li><strong>Kaskadno:</strong> notifikacije &rarr; bidovi &rarr; aukcije korisnika &rarr; vozila &rarr; nullify invitedById &rarr; korisnik</li>
+        </ul>
+      </div>
+
+      <!-- 10. Notifikacije -->
+      <div class="section">
+        <h2><span class="icon">10</span> Notifikacije</h2>
+
+        <h3>10.1 Tipovi</h3>
+        <table>
+          <tr><th>Tip</th><th>Kada</th><th>Kome</th><th>Medijum</th></tr>
+          <tr><td><code>INVITATION</code></td><td>Admin poziva korisnika</td><td>Pozvani</td><td>Email + DB</td></tr>
+          <tr><td><code>AUCTION_START</code></td><td>Aukcija postala LIVE</td><td>Broadcast</td><td>Pusher</td></tr>
+          <tr><td><code>AUCTION_END</code></td><td>Buy Now zavrsetak</td><td>Ostali bidderi</td><td>DB + Pusher</td></tr>
+          <tr><td><code>OUTBID</code></td><td>Neko dao vecu ponudu</td><td>Prethodni najvisci</td><td>DB + Pusher + Email</td></tr>
+          <tr><td><code>AUCTION_WON</code></td><td>Aukcija zavrsena</td><td>Pobednik</td><td>DB + Pusher + Email</td></tr>
+          <tr><td><code>AUCTION_LOST</code></td><td>Aukcija zavrsena</td><td>Gubitnici (batch)</td><td>DB + Pusher</td></tr>
+          <tr><td><code>BUY_NOW</code></td><td>Korisnik kupio Buy Now</td><td>Kupac</td><td>DB + Pusher</td></tr>
+        </table>
+
+        <h3>10.2 API</h3>
+        <ul>
+          <li><code>GET /api/notifications</code> &mdash; Poslednjih 50 notifikacija korisnika</li>
+          <li><code>PATCH /api/notifications</code> &mdash; Oznaci jednu (<code>{ id }</code>) ili sve (<code>{ markAllRead: true }</code>) kao procitane</li>
+        </ul>
+
+        <h3>10.3 Real-time</h3>
+        <ul>
+          <li>Pusher event <code>notification</code> na <code>private-user-{userId}</code> kanalu</li>
+          <li>Frontend: toast + refetch notifikacija iz baze</li>
+          <li>Bell ikona sa brojacem (9+ ako &gt; 9)</li>
+        </ul>
+
+        <h3>10.4 Email</h3>
+        <ul>
+          <li><code>sendInviteEmail</code> &mdash; Pozivnica sa activation linkom</li>
+          <li><code>sendAuctionWonEmail</code> &mdash; Obavestenje o pobedi</li>
+          <li><code>sendOutbidEmail</code> &mdash; Obavestenje o pretecanju (definisana, ograniceno koriscena)</li>
+          <li><code>sendAuctionLostEmail</code> &mdash; Obavestenje o gubitku (definisana, ograniceno koriscena)</li>
+        </ul>
+      </div>
+
+      <!-- 11. Pusher -->
+      <div class="section">
+        <h2><span class="icon">11</span> Real-time komunikacija (Pusher)</h2>
+
+        <h3>11.1 Kanali</h3>
+        <table>
+          <tr><th>Kanal</th><th>Tip</th><th>Namena</th></tr>
+          <tr><td><code>auction-{id}</code></td><td>Javni</td><td>Status promene, novi bidovi</td></tr>
+          <tr><td><code>private-user-{userId}</code></td><td>Privatni</td><td>Licne notifikacije, indikatori, bid potvrde</td></tr>
+        </table>
+
+        <h3>11.2 Eventi</h3>
+        <table>
+          <tr><th>Event</th><th>Kanal</th><th>Payload</th></tr>
+          <tr><td><code>new-bid</code></td><td>auction-{id}</td><td>highestBid, bidCount, [bidderId, bidderName], timestamp</td></tr>
+          <tr><td><code>auction-started</code></td><td>auction-{id}</td><td>auctionId, status: "LIVE"</td></tr>
+          <tr><td><code>auction-ended</code></td><td>auction-{id}</td><td>auctionId, status: "ENDED", winnerId, finalPrice</td></tr>
+          <tr><td><code>bid-placed</code></td><td>private-user-{id}</td><td>auctionId, amount, timestamp</td></tr>
+          <tr><td><code>bid-indicator</code></td><td>private-user-{id}</td><td>auctionId, isHighest, highestBid</td></tr>
+          <tr><td><code>notification</code></td><td>private-user-{id}</td><td>type, title, message</td></tr>
+        </table>
+
+        <h3>11.3 Autorizacija kanala</h3>
+        <ul>
+          <li><code>POST /api/pusher/auth</code></li>
+          <li><code>private-user-*</code>: samo sopstveni kanal</li>
+          <li>Nepoznati private kanali: odbijeni (403)</li>
+        </ul>
+      </div>
+
+      <!-- 12. Admin UI -->
+      <div class="section">
+        <h2><span class="icon">12</span> Admin interfejs</h2>
+
+        <h3>12.1 Dashboard (<code>/admin/dashboard</code>)</h3>
+        <ul>
+          <li>4 statisticke kartice: DRAFT, LIVE, ENDED, CANCELLED brojaci</li>
+          <li>Lista top 10 aktivnih aukcija sa status badge-ovima, bid brojacem, datumima</li>
+        </ul>
+
+        <h3>12.2 Upravljanje aukcijama (<code>/admin/auctions</code>)</h3>
+        <ul>
+          <li><strong>Kreiranje:</strong> Dialog sa izborom vozila, tipom, valutom, vremenima, cenama, buy now opcijom</li>
+          <li><strong>Filteri:</strong> Aktivne (DRAFT+LIVE), Zavrsene (ENDED), Arhivirane (ARCHIVED+CANCELLED)</li>
+          <li><strong>Status kontrole:</strong>
+            <ul>
+              <li>DRAFT: Pokreni (&rarr;LIVE), Otkazi (&rarr;CANCELLED)</li>
+              <li>LIVE: Zavrsi (&rarr;ENDED), Otkazi (&rarr;CANCELLED)</li>
+              <li>ENDED: Arhiviraj (&rarr;ARCHIVED)</li>
+              <li>CANCELLED: Arhiviraj (&rarr;ARCHIVED)</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h3>12.3 Detalj aukcije (<code>/admin/auctions/{id}</code>)</h3>
+        <ul>
+          <li>Info o vozilu (naziv, slike), parametri aukcije</li>
+          <li>Status sa kontrolnim dugmadima</li>
+          <li>Kompletna tabela bidova (svi bidovi, svi identiteti, sortirana po amount desc)</li>
+          <li>Prikazan pobednik sa finalnom cenom</li>
+        </ul>
+
+        <h3>12.4 Upravljanje vozilima (<code>/admin/vehicles</code>)</h3>
+        <ul>
+          <li>Kreiranje/Editovanje: Dialog sa svim podacima + drag-drop upload slika</li>
+          <li>Filteri: Dostupna (bez aukcije), Aktivna (sa LIVE), Prodata (sa ENDED)</li>
+          <li>Brisanje: Samo vozila bez aukcije</li>
+        </ul>
+
+        <h3>12.5 Upravljanje korisnicima (<code>/admin/users</code>)</h3>
+        <ul>
+          <li>Lista sa: email, ime, rola, status, datum, broj bidova, broj pobeda</li>
+          <li>Pozivanje (dialog sa email i role), aktivacija/deaktivacija toggle, brisanje sa potvrdom</li>
+        </ul>
+      </div>
+
+      <!-- 13. Buyer UI -->
+      <div class="section">
+        <h2><span class="icon">13</span> Buyer interfejs</h2>
+
+        <h3>13.1 Lista aukcija (<code>/auctions</code>)</h3>
+        <ul>
+          <li>Pretraga po nazivu, filter (Sve/Aktivne/Zavrsene)</li>
+          <li>Kartica: slika, naziv, status badge, tip badge, broj ponuda, countdown, Buy Now cena, "Pobedili ste" badge</li>
+        </ul>
+
+        <h3>13.2 Detalj aukcije (<code>/auctions/{id}</code>)</h3>
+        <ul>
+          <li>Image carousel sa thumbnails</li>
+          <li>Timer HH:MM:SS (azurira se svake sekunde)</li>
+          <li>Trenutna ponuda + indikator pozicije (zavisno od tipa)</li>
+          <li>Forma za licitaciju + Buy Now dugme (sa confirm dijalogom)</li>
+          <li>Istorija bidova (filtrirana po tipu aukcije)</li>
+          <li>Rezultat za ENDED (pobeda/gubitak/ne-ucesnik)</li>
+        </ul>
+
+        <h3>13.3 Moje ponude (<code>/my-bids</code>)</h3>
+        <ul><li>Grupisano po aukciji, najvisca ponuda za svaku</li></ul>
+
+        <h3>13.4 Osvojene aukcije (<code>/won</code>)</h3>
+        <ul><li>Grid prikaz: slika, naziv, "Pobednik" badge, finalna cena, datum</li></ul>
+      </div>
+
+      <!-- 14. i18n -->
+      <div class="section">
+        <h2><span class="icon">14</span> Internacionalizacija (i18n)</h2>
+        <ul>
+          <li><strong>Podrzani jezici:</strong> Srpski (sr) - default, Engleski (en)</li>
+          <li><strong>Pokrivene sekcije:</strong> common, auth, nav, auction, vehicle, user, notification, currency</li>
+          <li><strong>Mehanizam:</strong> Context provider sa <code>useI18n()</code> hook-om</li>
+          <li><strong>Parametri:</strong> <code>t("key", { price: 500, currency: "EUR" })</code></li>
+          <li><strong>Switcher:</strong> SR/EN dugme u header-u</li>
+        </ul>
+      </div>
+
+      <!-- 15. Theming -->
+      <div class="section">
+        <h2><span class="icon">15</span> Tema (Theming)</h2>
+        <ul>
+          <li><strong>Admin:</strong> Forsirano light tema (ForceLight komponenta)</li>
+          <li><strong>Buyer:</strong> Light/Dark toggle u header-u</li>
+          <li><strong>Implementacija:</strong> next-themes sa <code>class</code> atributom</li>
+          <li><strong>CSS:</strong> Tailwind v4 sa oklch boja varijablama u <code>:root</code> i <code>.dark</code></li>
+        </ul>
+      </div>
+
+      <!-- 16. DB Schema -->
+      <div class="section">
+        <h2><span class="icon">16</span> Baza podataka (Schema)</h2>
+
+        <h3>16.1 User</h3>
+        <table>
+          <tr><th>Polje</th><th>Tip</th><th>Napomena</th></tr>
+          <tr><td><code>id</code></td><td>CUID</td><td>PK</td></tr>
+          <tr><td><code>email</code></td><td>String</td><td>Unique</td></tr>
+          <tr><td><code>name</code></td><td>String?</td><td></td></tr>
+          <tr><td><code>passwordHash</code></td><td>String?</td><td>Null za neaktivirane</td></tr>
+          <tr><td><code>role</code></td><td>ADMIN/BUYER</td><td>Default: BUYER</td></tr>
+          <tr><td><code>status</code></td><td>PENDING/ACTIVE/DEACTIVATED</td><td>Default: PENDING</td></tr>
+          <tr><td><code>language</code></td><td>String</td><td>Default: "sr"</td></tr>
+          <tr><td><code>invitedById</code></td><td>String?</td><td>FK&rarr;User (self-relation)</td></tr>
+          <tr><td><code>inviteToken</code></td><td>String?</td><td>Unique, 64-hex</td></tr>
+          <tr><td><code>inviteTokenExpiry</code></td><td>DateTime?</td><td>+48h</td></tr>
+        </table>
+
+        <h3>16.2 Vehicle</h3>
+        <table>
+          <tr><th>Polje</th><th>Tip</th><th>Napomena</th></tr>
+          <tr><td><code>id</code></td><td>CUID</td><td>PK</td></tr>
+          <tr><td><code>name</code></td><td>String</td><td>Obavezno</td></tr>
+          <tr><td><code>description</code></td><td>Text?</td><td></td></tr>
+          <tr><td><code>specifications</code></td><td>JSON?</td><td>{year, mileage, fuel, ...}</td></tr>
+          <tr><td><code>images</code></td><td>Text[]</td><td>Niz URL-ova</td></tr>
+          <tr><td><code>createdById</code></td><td>String</td><td>FK&rarr;User</td></tr>
+        </table>
+
+        <h3>16.3 Auction</h3>
+        <table>
+          <tr><th>Polje</th><th>Tip</th><th>Napomena</th></tr>
+          <tr><td><code>id</code></td><td>CUID</td><td>PK</td></tr>
+          <tr><td><code>vehicleId</code></td><td>String</td><td>FK&rarr;Vehicle, unique (1:1)</td></tr>
+          <tr><td><code>createdById</code></td><td>String</td><td>FK&rarr;User</td></tr>
+          <tr><td><code>status</code></td><td>Enum</td><td>DRAFT/LIVE/ENDED/CANCELLED/ARCHIVED</td></tr>
+          <tr><td><code>startTime</code></td><td>DateTime</td><td>Indexed</td></tr>
+          <tr><td><code>endTime</code></td><td>DateTime</td><td>Indexed</td></tr>
+          <tr><td><code>currency</code></td><td>RSD/EUR</td><td>Default: EUR</td></tr>
+          <tr><td><code>startingPrice</code></td><td>Decimal(12,2)?</td><td>Minimalni bid</td></tr>
+          <tr><td><code>reservePrice</code></td><td>Decimal(12,2)?</td><td>Minimalna cena za pobednika</td></tr>
+          <tr><td><code>showReservePrice</code></td><td>Boolean</td><td>Default: false</td></tr>
+          <tr><td><code>auctionType</code></td><td>Enum</td><td>SEALED/OPEN/INDICATOR/ANONYMOUS</td></tr>
+          <tr><td><code>showBidCount</code></td><td>Boolean</td><td>Default: true</td></tr>
+          <tr><td><code>buyNowEnabled</code></td><td>Boolean</td><td>Default: false</td></tr>
+          <tr><td><code>buyNowPrice</code></td><td>Decimal(12,2)?</td><td></td></tr>
+          <tr><td><code>winnerId</code></td><td>String?</td><td>FK&rarr;User</td></tr>
+          <tr><td><code>finalPrice</code></td><td>Decimal(12,2)?</td><td></td></tr>
+        </table>
+
+        <h3>16.4 Bid</h3>
+        <table>
+          <tr><th>Polje</th><th>Tip</th><th>Napomena</th></tr>
+          <tr><td><code>id</code></td><td>CUID</td><td>PK</td></tr>
+          <tr><td><code>auctionId</code></td><td>String</td><td>FK&rarr;Auction</td></tr>
+          <tr><td><code>userId</code></td><td>String</td><td>FK&rarr;User</td></tr>
+          <tr><td><code>amount</code></td><td>Decimal(12,2)</td><td></td></tr>
+          <tr><td><code>isBuyNow</code></td><td>Boolean</td><td>Default: false</td></tr>
+          <tr><td><code>createdAt</code></td><td>TimestampTZ(3)</td><td></td></tr>
+        </table>
+        <p style="margin-top:8px;"><strong>Indeksi:</strong> (auctionId, amount DESC), (auctionId, createdAt), userId</p>
+
+        <h3>16.5 Notification</h3>
+        <table>
+          <tr><th>Polje</th><th>Tip</th><th>Napomena</th></tr>
+          <tr><td><code>id</code></td><td>CUID</td><td>PK</td></tr>
+          <tr><td><code>userId</code></td><td>String</td><td>FK&rarr;User</td></tr>
+          <tr><td><code>type</code></td><td>Enum</td><td>INVITATION/AUCTION_START/AUCTION_END/OUTBID/AUCTION_WON/AUCTION_LOST/BUY_NOW</td></tr>
+          <tr><td><code>title</code></td><td>String</td><td></td></tr>
+          <tr><td><code>message</code></td><td>String</td><td></td></tr>
+          <tr><td><code>data</code></td><td>JSON?</td><td></td></tr>
+          <tr><td><code>read</code></td><td>Boolean</td><td>Default: false</td></tr>
+          <tr><td><code>createdAt</code></td><td>DateTime</td><td></td></tr>
+        </table>
+        <p style="margin-top:8px;"><strong>Indeksi:</strong> (userId, read), (userId, createdAt DESC)</p>
+
+        <h3>Enums</h3>
+        <table>
+          <tr><th>Enum</th><th>Vrednosti</th></tr>
+          <tr><td><code>Role</code></td><td>ADMIN, BUYER</td></tr>
+          <tr><td><code>UserStatus</code></td><td>PENDING, ACTIVE, DEACTIVATED</td></tr>
+          <tr><td><code>AuctionStatus</code></td><td>DRAFT, LIVE, ENDED, CANCELLED, ARCHIVED</td></tr>
+          <tr><td><code>Currency</code></td><td>RSD, EUR</td></tr>
+          <tr><td><code>AuctionType</code></td><td>SEALED, OPEN, INDICATOR, ANONYMOUS</td></tr>
+          <tr><td><code>NotificationType</code></td><td>INVITATION, AUCTION_START, AUCTION_END, OUTBID, AUCTION_WON, AUCTION_LOST, BUY_NOW</td></tr>
+        </table>
+      </div>
+
+      <!-- 17. Pobednik -->
+      <div class="section">
+        <h2><span class="icon">17</span> Odredjivanje pobednika</h2>
+
+        <h3>17.1 Uslovi za pobedu</h3>
+        <ol>
+          <li>Aukcija ima barem jedan bid</li>
+          <li>Highest bid amount &ge; reservePrice (ako reservePrice postoji)</li>
+          <li>Ako nema reservePrice, svaki highest bid je dovoljan</li>
+        </ol>
+
+        <h3>17.2 Scenariji</h3>
+        <table>
+          <tr><th>Bidovi</th><th>Reserve</th><th>Rezultat</th></tr>
+          <tr><td>Nema bidova</td><td>-</td><td>winnerId=null, finalPrice=null</td></tr>
+          <tr><td>Highest=5000</td><td>null</td><td>winnerId=bidder, finalPrice=5000</td></tr>
+          <tr><td>Highest=5000</td><td>3000</td><td>winnerId=bidder, finalPrice=5000</td></tr>
+          <tr><td>Highest=5000</td><td>10000</td><td>winnerId=null, finalPrice=null</td></tr>
+          <tr><td>Buy Now</td><td>-</td><td>winnerId=buyer, finalPrice=buyNowPrice</td></tr>
+        </table>
+      </div>
+
+      <!-- 18. Validacije -->
+      <div class="section">
+        <h2><span class="icon">18</span> Validacione scheme (Zod)</h2>
+        <table>
+          <tr><th>Schema</th><th>Polja</th><th>Pravila</th></tr>
+          <tr><td><code>loginSchema</code></td><td>email, password</td><td>valid email, min 6 char</td></tr>
+          <tr><td><code>bidSchema</code></td><td>amount</td><td>pozitivan number</td></tr>
+          <tr><td><code>auctionSchema</code></td><td>vehicleId, startTime, endTime, currency, auctionType, +opcioni</td><td>enum validacija, pozitivne cene</td></tr>
+          <tr><td><code>vehicleSchema</code></td><td>name, description?, specifications?, images</td><td>min 1 char name</td></tr>
+          <tr><td><code>inviteUserSchema</code></td><td>email, role, name?</td><td>valid email, enum ADMIN/BUYER</td></tr>
+          <tr><td><code>setPasswordSchema</code></td><td>token, password, name</td><td>min 6 password, min 1 name</td></tr>
+        </table>
+      </div>
+
+      <!-- 19. Env -->
+      <div class="section">
+        <h2><span class="icon">19</span> Environment varijable</h2>
+        <table>
+          <tr><th>Varijabla</th><th>Opis</th></tr>
+          <tr><td><code>DATABASE_URL</code></td><td>Prisma Accelerate ili direktni PostgreSQL</td></tr>
+          <tr><td><code>AUTH_SECRET</code></td><td>NextAuth secret (openssl rand -base64 32)</td></tr>
+          <tr><td><code>AUTH_URL</code></td><td>URL aplikacije za auth</td></tr>
+          <tr><td><code>PUSHER_APP_ID</code></td><td>Pusher App ID</td></tr>
+          <tr><td><code>PUSHER_KEY</code></td><td>Pusher Key</td></tr>
+          <tr><td><code>PUSHER_SECRET</code></td><td>Pusher Secret</td></tr>
+          <tr><td><code>PUSHER_CLUSTER</code></td><td>Pusher Cluster (eu)</td></tr>
+          <tr><td><code>NEXT_PUBLIC_PUSHER_KEY</code></td><td>Klijentski Pusher key</td></tr>
+          <tr><td><code>NEXT_PUBLIC_PUSHER_CLUSTER</code></td><td>Klijentski Pusher cluster</td></tr>
+          <tr><td><code>RESEND_API_KEY</code></td><td>Resend API kljuc</td></tr>
+          <tr><td><code>EMAIL_FROM</code></td><td>Email adresa posiljaoca</td></tr>
+          <tr><td><code>CRON_SECRET</code></td><td>Secret za cron autentifikaciju</td></tr>
+          <tr><td><code>NEXT_PUBLIC_APP_URL</code></td><td>Javni URL aplikacije</td></tr>
+        </table>
+      </div>
+
+      <!-- 20. Deployment -->
+      <div class="section">
+        <h2><span class="icon">20</span> Deployment (Vercel)</h2>
+        <ul>
+          <li><strong>Cron job:</strong> <code>/api/cron/auction-lifecycle</code> &mdash; svaki minut (<code>*/1 * * * *</code>)</li>
+          <li><strong>Upload:</strong> <code>public/uploads</code> &mdash; ephemeral na serverless-u (potreban S3/UploadThing za produkciju)</li>
+          <li><strong>Baza:</strong> Prisma Accelerate ili direktni PostgreSQL (auto-detect po URL formatu)</li>
+        </ul>
+      </div>
+
+      <!-- 21. Testovi -->
+      <div class="section">
+        <h2><span class="icon">21</span> Test pokrivenost</h2>
+        <table>
+          <tr><th>Test fajl</th><th>Testova</th><th>Pokriva</th></tr>
+          <tr><td><code>validations.test.ts</code></td><td>24</td><td>Svi Zod schemai</td></tr>
+          <tr><td><code>bid-api.test.ts</code></td><td>20</td><td>Auth, validacija, bidding logika, Pusher po tipu, outbid</td></tr>
+          <tr><td><code>buy-now-api.test.ts</code></td><td>8</td><td>Auth, validacija, kupovina, broadcast, notifikacije</td></tr>
+          <tr><td><code>auction-lifecycle.test.ts</code></td><td>8</td><td>Cron auth, start/end, pobednik, reserve, notifikacije</td></tr>
+          <tr><td><code>auction-access.test.ts</code></td><td>8</td><td>Pristup po tipu, ENDED, ADMIN</td></tr>
+          <tr><td><code>auction-status.test.ts</code></td><td>12</td><td>Tranzicije, auth, ENDED logika</td></tr>
+          <tr><td style="font-weight: 700;">Ukupno</td><td style="font-weight: 700;">80</td><td></td></tr>
+        </table>
+      </div>
+
+      <!-- 22. Seed -->
+      <div class="section">
+        <h2><span class="icon">22</span> Seed podaci (Development)</h2>
+        <table>
+          <tr><th>Entitet</th><th>Podaci</th></tr>
+          <tr><td>Admin</td><td><code>admin@aukcija.rs</code> / <code>admin123</code>, ACTIVE</td></tr>
+          <tr><td>Buyer</td><td><code>kupac@aukcija.rs</code> / <code>buyer123</code>, ACTIVE</td></tr>
+          <tr><td>Vehicle</td><td>BMW 530d xDrive 2020, dizel, automatik, 195kW</td></tr>
+          <tr><td>Auction</td><td>DRAFT, OPEN, EUR, startingPrice 15000, +1h start, +25h end</td></tr>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    AUKCIJA &mdash; Specifikacija projekta &mdash; Generisano: Februar 2026
+  </div>
+
+  <script>
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      event.target.closest('.tab-btn').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { audit, getClientIp } from "@/lib/audit";
 
 export async function PATCH(
   req: NextRequest,
@@ -28,6 +29,10 @@ export async function PATCH(
         status: true,
       },
     });
+
+    const ip = await getClientIp();
+    audit({ action: "USER_STATUS_CHANGED", userId: session.user.id, targetId: id, metadata: { status: body.status }, ip });
+
     return NextResponse.json(user);
   }
 
@@ -82,6 +87,9 @@ export async function DELETE(
   });
 
   await prisma.user.delete({ where: { id } });
+
+  const ip = await getClientIp();
+  audit({ action: "USER_DELETED", userId: session.user.id, targetId: id, ip });
 
   return NextResponse.json({ success: true });
 }

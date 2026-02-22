@@ -63,7 +63,7 @@ export default function UsersPage() {
 
     if (res.ok) {
       const data = await res.json();
-      const inviteLink = `${window.location.origin}/invite/${data.inviteToken}`;
+      const inviteLink = data.inviteLink;
       toast.success("Pozivnica poslata!", {
         description: inviteLink,
         duration: 30000,
