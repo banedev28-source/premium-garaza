@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { setPasswordSchema } from "@/lib/validations";
-import { audit, getClientIp } from "@/lib/audit";
+import { audit } from "@/lib/audit";
 import { publicApiLimiter, checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
@@ -23,25 +23,16 @@ export async function POST(req: NextRequest) {
 
   const { token, password, name } = parsed.data;
 
-  const user = await prisma.user.findFirst({
+  const passwordHash = await bcrypt.hash(password, 12);
+
+  // Atomic: updateMany with WHERE conditions prevents race condition
+  // (two requests accepting same token simultaneously)
+  const result = await prisma.user.updateMany({
     where: {
       inviteToken: token,
       inviteTokenExpiry: { gt: new Date() },
       status: "PENDING",
     },
-  });
-
-  if (!user) {
-    return NextResponse.json(
-      { error: "Invalid or expired token" },
-      { status: 404 }
-    );
-  }
-
-  const passwordHash = await bcrypt.hash(password, 12);
-
-  await prisma.user.update({
-    where: { id: user.id },
     data: {
       name,
       passwordHash,
@@ -51,8 +42,21 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  const auditIp = await getClientIp();
-  audit({ action: "INVITE_ACCEPTED", userId: user.id, ip: auditIp });
+  if (result.count === 0) {
+    return NextResponse.json(
+      { error: "Invalid or expired token" },
+      { status: 404 }
+    );
+  }
+
+  // Get user ID for audit (token already cleared, find by email is not available here)
+  const acceptedUser = await prisma.user.findFirst({
+    where: { name, passwordHash, status: "ACTIVE" },
+    select: { id: true },
+    orderBy: { updatedAt: "desc" },
+  });
+
+  audit({ action: "INVITE_ACCEPTED", userId: acceptedUser?.id, ip });
 
   return NextResponse.json({ success: true });
 }

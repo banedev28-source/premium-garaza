@@ -14,6 +14,15 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // Verify user is still active in DB (JWT may carry stale status)
+  const currentUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { status: true },
+  });
+  if (!currentUser || currentUser.status !== "ACTIVE") {
+    return NextResponse.json({ error: "Vas nalog je deaktiviran" }, { status: 403 });
+  }
+
   const { id: auctionId } = await params;
 
   try {
@@ -74,22 +83,25 @@ export async function POST(
       distinct: ["userId"],
     });
 
-    for (const bidder of bidders) {
-      await prisma.notification.create({
-        data: {
-          userId: bidder.userId,
-          type: "AUCTION_END",
-          title: "Aukcija zavrsena",
-          message: `Aukcija za ${result.auction.vehicle.name} je zavrsena - neko je iskoristio Buy Now opciju`,
-          data: { auctionId },
-        },
-      });
-
-      await pusher.trigger(`private-user-${bidder.userId}`, "notification", {
-        type: "AUCTION_END",
-        title: "Aukcija zavrsena",
-        message: `Aukcija za ${result.auction.vehicle.name} je zavrsena`,
-      });
+    if (bidders.length > 0) {
+      await Promise.all([
+        prisma.notification.createMany({
+          data: bidders.map((bidder) => ({
+            userId: bidder.userId,
+            type: "AUCTION_END" as const,
+            title: "Aukcija zavrsena",
+            message: `Aukcija za ${result.auction.vehicle.name} je zavrsena - neko je iskoristio Buy Now opciju`,
+            data: { auctionId },
+          })),
+        }),
+        ...bidders.map((bidder) =>
+          pusher.trigger(`private-user-${bidder.userId}`, "notification", {
+            type: "AUCTION_END",
+            title: "Aukcija zavrsena",
+            message: `Aukcija za ${result.auction.vehicle.name} je zavrsena`,
+          })
+        ),
+      ]);
     }
 
     // Notify winner

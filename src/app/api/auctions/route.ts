@@ -16,7 +16,8 @@ export async function GET(req: NextRequest) {
   const limit = Math.min(100, Math.max(1, Number(req.nextUrl.searchParams.get("limit")) || 50));
   const where: Prisma.AuctionWhereInput = {};
 
-  if (status) {
+  const validStatuses = ["DRAFT", "LIVE", "ENDED", "CANCELLED", "ARCHIVED"];
+  if (status && validStatuses.includes(status)) {
     where.status = status as Prisma.EnumAuctionStatusFilter;
   }
 

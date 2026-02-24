@@ -61,6 +61,7 @@ export default auth(async (req) => {
   if (
     pathname.startsWith("/login") ||
     pathname.startsWith("/invite") ||
+    pathname.startsWith("/offline") ||
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/api/invite")
   ) {
@@ -86,6 +87,6 @@ export default auth(async (req) => {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|api/pusher|api/cron).*)",
+    "/((?!_next/static|_next/image|favicon\\.|manifest\\.json|sw\\.js|icon-|screenshot-|api/pusher|api/cron).*)",
   ],
 };

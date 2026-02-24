@@ -48,23 +48,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         );
 
         if (!isValid) {
-          const newCount = user.failedLoginAttempts + 1;
-          const lockout = newCount >= MAX_FAILED_ATTEMPTS
-            ? new Date(Date.now() + LOCKOUT_DURATION_MS)
-            : null;
-
-          await prisma.user.update({
+          // Atomic increment to prevent race conditions
+          const updated = await prisma.user.update({
             where: { id: user.id },
-            data: {
-              failedLoginAttempts: newCount,
-              lockedUntil: lockout,
-            },
+            data: { failedLoginAttempts: { increment: 1 } },
+            select: { failedLoginAttempts: true },
           });
+
+          if (updated.failedLoginAttempts >= MAX_FAILED_ATTEMPTS) {
+            await prisma.user.update({
+              where: { id: user.id },
+              data: { lockedUntil: new Date(Date.now() + LOCKOUT_DURATION_MS) },
+            });
+          }
 
           audit({
             action: "LOGIN_FAILED",
             userId: user.id,
-            metadata: { reason: "wrong_password", attempts: newCount, locked: !!lockout },
+            metadata: { reason: "wrong_password", attempts: updated.failedLoginAttempts, locked: updated.failedLoginAttempts >= MAX_FAILED_ATTEMPTS },
             ip,
           });
           return null;

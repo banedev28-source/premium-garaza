@@ -39,8 +39,10 @@ export function audit(params: AuditParams): void {
         ip: params.ip ?? null,
       },
     })
-    .catch(() => {
-      // Silently fail - audit should never break main flow
+    .catch((err) => {
+      if (process.env.NODE_ENV === "development") {
+        console.error("Audit log error:", err);
+      }
     });
 }
 

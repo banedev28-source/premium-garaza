@@ -168,10 +168,11 @@ describe("POST /api/auctions/[id]/buy-now", () => {
       // Other bidders exist
       mockPrisma.bid.findMany.mockResolvedValue([{ userId: "buyer-2" }]);
       mockPrisma.notification.create.mockResolvedValue({});
+      mockPrisma.notification.createMany.mockResolvedValue({ count: 1 });
 
       await POST(makeRequest(), makeParams("auction-1"));
 
-      // BUY_NOW for buyer
+      // BUY_NOW for buyer (individual create)
       expect(mockPrisma.notification.create).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({
@@ -181,13 +182,15 @@ describe("POST /api/auctions/[id]/buy-now", () => {
         })
       );
 
-      // AUCTION_END for other bidder
-      expect(mockPrisma.notification.create).toHaveBeenCalledWith(
+      // AUCTION_END for other bidders (batch createMany)
+      expect(mockPrisma.notification.createMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          data: expect.objectContaining({
-            userId: "buyer-2",
-            type: "AUCTION_END",
-          }),
+          data: expect.arrayContaining([
+            expect.objectContaining({
+              userId: "buyer-2",
+              type: "AUCTION_END",
+            }),
+          ]),
         })
       );
     });

@@ -32,6 +32,7 @@
     "confirmPassword": "Confirm password",
     "activateAccount": "Activate account",
     "inviteExpired": "Invitation link has expired",
+    "passwordMismatch": "Passwords do not match",
     "accountActivated": "Account activated successfully!"
   },
   "nav": {

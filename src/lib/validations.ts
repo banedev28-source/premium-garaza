@@ -60,7 +60,16 @@ export const auctionSchema = z.object({
   showBidCount: z.boolean().default(true),
   buyNowEnabled: z.boolean().default(false),
   buyNowPrice: z.number().positive("Buy Now cena mora biti pozitivna").optional(),
-});
+}).refine(
+  (data) => new Date(data.endTime) > new Date(data.startTime),
+  { message: "Vreme zavrsetka mora biti posle vremena pocetka", path: ["endTime"] }
+).refine(
+  (data) => new Date(data.startTime) > new Date(),
+  { message: "Vreme pocetka mora biti u buducnosti", path: ["startTime"] }
+).refine(
+  (data) => !data.buyNowEnabled || !data.buyNowPrice || !data.startingPrice || data.buyNowPrice >= data.startingPrice,
+  { message: "Buy Now cena mora biti veca ili jednaka pocetnoj ceni", path: ["buyNowPrice"] }
+);
 
 export const bidSchema = z.object({
   amount: z.number().positive("Ponuda mora biti pozitivna"),

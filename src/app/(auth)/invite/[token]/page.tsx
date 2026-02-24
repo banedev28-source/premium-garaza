@@ -38,7 +38,7 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
     setError("");
 
     if (password !== confirmPassword) {
-      setError("Lozinke se ne poklapaju");
+      setError(t("auth.passwordMismatch"));
       return;
     }
 
@@ -106,6 +106,7 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 minLength={8}
+                autoComplete="new-password"
                 required
               />
             </div>
@@ -117,6 +118,7 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 minLength={8}
+                autoComplete="new-password"
                 required
               />
             </div>

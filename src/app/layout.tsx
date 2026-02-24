@@ -5,6 +5,7 @@ import { SessionProvider } from "@/components/providers/session-provider";
 import { I18nProvider } from "@/components/providers/i18n-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { PWARegister } from "@/components/pwa-register";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,6 +20,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Aukcija - Platforma za aukcije vozila",
   description: "Platforma za online aukcije vozila",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Aukcija",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
 };
 
 export default function RootLayout({
@@ -28,6 +38,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="sr" suppressHydrationWarning>
+      <head>
+        <meta name="theme-color" content="#1a1a2e" />
+        <link rel="icon" href="/favicon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -36,6 +51,7 @@ export default function RootLayout({
             <I18nProvider>
               {children}
               <Toaster />
+              <PWARegister />
             </I18nProvider>
           </ThemeProvider>
         </SessionProvider>

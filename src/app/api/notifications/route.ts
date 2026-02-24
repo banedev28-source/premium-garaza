@@ -34,10 +34,14 @@ export async function PATCH(req: NextRequest) {
   }
 
   if (body.id) {
-    await prisma.notification.update({
-      where: { id: body.id, userId: session.user.id },
-      data: { read: true },
-    });
+    try {
+      await prisma.notification.update({
+        where: { id: body.id, userId: session.user.id },
+        data: { read: true },
+      });
+    } catch {
+      return NextResponse.json({ error: "Notification not found" }, { status: 404 });
+    }
     return NextResponse.json({ success: true });
   }
 

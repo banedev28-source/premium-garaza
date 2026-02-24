@@ -16,6 +16,11 @@ export async function PATCH(
   const { id } = await params;
   const body = await req.json();
 
+  // Don't allow deactivating yourself
+  if (body.status === "DEACTIVATED" && id === session.user.id) {
+    return NextResponse.json({ error: "Ne mozete deaktivirati sami sebe" }, { status: 400 });
+  }
+
   // Only allow toggling status
   if (body.status && ["ACTIVE", "DEACTIVATED"].includes(body.status)) {
     const user = await prisma.user.update({
@@ -56,37 +61,51 @@ export async function DELETE(
     return NextResponse.json({ error: "Ne mozete obrisati sami sebe" }, { status: 400 });
   }
 
-  // Delete all related data in correct order to avoid FK violations
-  await prisma.notification.deleteMany({ where: { userId: id } });
-  await prisma.bid.deleteMany({ where: { userId: id } });
-
-  // Remove winnerId references
-  await prisma.auction.updateMany({
-    where: { winnerId: id },
-    data: { winnerId: null, finalPrice: null },
+  // Don't allow deleting other admins
+  const targetUser = await prisma.user.findUnique({
+    where: { id },
+    select: { role: true },
   });
-
-  // Delete auctions created by this user (bids already cleaned above or cascade)
-  const userAuctions = await prisma.auction.findMany({
-    where: { createdById: id },
-    select: { id: true },
-  });
-  if (userAuctions.length > 0) {
-    const auctionIds = userAuctions.map((a) => a.id);
-    await prisma.bid.deleteMany({ where: { auctionId: { in: auctionIds } } });
-    await prisma.auction.deleteMany({ where: { createdById: id } });
+  if (!targetUser) {
+    return NextResponse.json({ error: "Korisnik nije pronadjen" }, { status: 404 });
+  }
+  if (targetUser.role === "ADMIN") {
+    return NextResponse.json({ error: "Ne mozete obrisati drugog administratora" }, { status: 400 });
   }
 
-  // Delete vehicles created by this user
-  await prisma.vehicle.deleteMany({ where: { createdById: id } });
+  // Delete all related data in a transaction to ensure consistency
+  await prisma.$transaction(async (tx) => {
+    await tx.notification.deleteMany({ where: { userId: id } });
+    await tx.bid.deleteMany({ where: { userId: id } });
 
-  // Nullify invitedById references
-  await prisma.user.updateMany({
-    where: { invitedById: id },
-    data: { invitedById: null },
+    // Remove winnerId references
+    await tx.auction.updateMany({
+      where: { winnerId: id },
+      data: { winnerId: null, finalPrice: null },
+    });
+
+    // Delete auctions created by this user
+    const userAuctions = await tx.auction.findMany({
+      where: { createdById: id },
+      select: { id: true },
+    });
+    if (userAuctions.length > 0) {
+      const auctionIds = userAuctions.map((a) => a.id);
+      await tx.bid.deleteMany({ where: { auctionId: { in: auctionIds } } });
+      await tx.auction.deleteMany({ where: { createdById: id } });
+    }
+
+    // Delete vehicles created by this user
+    await tx.vehicle.deleteMany({ where: { createdById: id } });
+
+    // Nullify invitedById references
+    await tx.user.updateMany({
+      where: { invitedById: id },
+      data: { invitedById: null },
+    });
+
+    await tx.user.delete({ where: { id } });
   });
-
-  await prisma.user.delete({ where: { id } });
 
   const ip = await getClientIp();
   audit({ action: "USER_DELETED", userId: session.user.id, targetId: id, ip });

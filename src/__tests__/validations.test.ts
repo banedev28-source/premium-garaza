@@ -70,10 +70,14 @@ describe("bidSchema", () => {
 });
 
 describe("auctionSchema", () => {
+  // Use future dates to pass startTime > now() validation
+  const futureStart = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+  const futureEnd = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString();
+
   const validAuction = {
     vehicleId: "vehicle-1",
-    startTime: "2025-01-01T10:00:00Z",
-    endTime: "2025-01-02T10:00:00Z",
+    startTime: futureStart,
+    endTime: futureEnd,
     currency: "EUR" as const,
     auctionType: "OPEN" as const,
   };

@@ -59,7 +59,7 @@ export function Header() {
                 </div>
               </div>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/login" })}>
+              <DropdownMenuItem onClick={() => signOut({ redirect: false }).then(() => { window.location.href = "/login"; })}>
                 {t("auth.logout")}
               </DropdownMenuItem>
             </DropdownMenuContent>

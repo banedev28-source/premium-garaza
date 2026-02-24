@@ -58,7 +58,7 @@ describe("GET /api/cron/auction-lifecycle", () => {
       expect(data.started).toBe(1);
       expect(mockPrisma.auction.update).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { id: "auction-draft" },
+          where: { id: "auction-draft", status: "DRAFT" },
           data: { status: "LIVE" },
         })
       );

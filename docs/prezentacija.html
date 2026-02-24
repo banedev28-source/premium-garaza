@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aukcija - Platforma za online aukcije vozila</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #12121a;
+    --bg3: #1a1a2e;
+    --accent: #e94560;
+    --accent2: #0f3460;
+    --text: #e0e0e0;
+    --text2: #888;
+    --border: #2a2a3e;
+    --green: #00c853;
+    --blue: #448aff;
+    --orange: #ff9100;
+    --purple: #b388ff;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  a { color: var(--accent); text-decoration: none; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  nav .logo { font-size:1.4rem; font-weight:800; color:#fff; letter-spacing: -0.5px; }
+  nav .logo span { color: var(--accent); }
+  nav ul { list-style:none; display:flex; gap:1.5rem; }
+  nav ul a { color:var(--text2); font-size:0.9rem; transition:color .2s; }
+  nav ul a:hover { color:#fff; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    background: radial-gradient(ellipse at 50% 0%, rgba(233,69,96,0.12) 0%, transparent 60%);
+    position: relative;
+  }
+  .hero h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; color:#fff; line-height:1.15; margin-bottom:1.5rem; }
+  .hero h1 span { color: var(--accent); }
+  .hero p { font-size: 1.25rem; color: var(--text2); max-width: 640px; margin: 0 auto 2.5rem; }
+  .hero-badges { display:flex; flex-wrap:wrap; gap:0.75rem; justify-content:center; margin-top:1rem; }
+  .hero-badges span {
+    background: var(--bg3); border:1px solid var(--border);
+    padding: 0.4rem 1rem; border-radius: 100px; font-size:0.85rem; color:var(--text2);
+  }
+
+  /* ── SECTION ── */
+  section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
+  section:nth-child(even) { background: var(--bg2); max-width:100%; }
+  section:nth-child(even) > .inner { max-width:1200px; margin:0 auto; }
+  .section-title {
+    font-size: 2.2rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem;
+  }
+  .section-subtitle { color: var(--text2); font-size:1.1rem; margin-bottom: 3rem; }
+
+  /* ── FEATURE GRID ── */
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+  .feature-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .feature-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .feature-icon {
+    width:48px; height:48px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.5rem; margin-bottom:1rem;
+  }
+  .feature-card h3 { font-size:1.15rem; color:#fff; margin-bottom:0.5rem; }
+  .feature-card p { color:var(--text2); font-size:0.95rem; }
+
+  /* icon colors */
+  .ic-red { background: rgba(233,69,96,0.15); color:var(--accent); }
+  .ic-blue { background: rgba(68,138,255,0.15); color:var(--blue); }
+  .ic-green { background: rgba(0,200,83,0.15); color:var(--green); }
+  .ic-orange { background: rgba(255,145,0,0.15); color:var(--orange); }
+  .ic-purple { background: rgba(179,136,255,0.15); color:var(--purple); }
+
+  /* ── AUCTION TYPES ── */
+  .types-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+  .type-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem; text-align:center;
+    position: relative; overflow: hidden;
+  }
+  .type-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:4px;
+  }
+  .type-card:nth-child(1)::before { background: var(--accent); }
+  .type-card:nth-child(2)::before { background: var(--green); }
+  .type-card:nth-child(3)::before { background: var(--blue); }
+  .type-card:nth-child(4)::before { background: var(--purple); }
+  .type-card h3 { font-size:1.3rem; color:#fff; margin-bottom:0.75rem; }
+  .type-card p { color: var(--text2); font-size:0.9rem; line-height:1.8; }
+  .type-tag {
+    display:inline-block; padding: 0.25rem 0.75rem; border-radius:100px;
+    font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;
+    margin-bottom:1rem;
+  }
+  .type-card:nth-child(1) .type-tag { background: rgba(233,69,96,0.15); color:var(--accent); }
+  .type-card:nth-child(2) .type-tag { background: rgba(0,200,83,0.15); color:var(--green); }
+  .type-card:nth-child(3) .type-tag { background: rgba(68,138,255,0.15); color:var(--blue); }
+  .type-card:nth-child(4) .type-tag { background: rgba(179,136,255,0.15); color:var(--purple); }
+
+  /* ── FLOW / STEPS ── */
+  .steps { display:flex; flex-direction:column; gap:0; position:relative; }
+  .steps::before {
+    content:''; position:absolute; left:24px; top:24px; bottom:24px;
+    width:2px; background: var(--border);
+  }
+  .step {
+    display:flex; gap:1.5rem; align-items:flex-start; padding: 1.5rem 0;
+    position: relative;
+  }
+  .step-num {
+    flex-shrink:0; width:48px; height:48px; border-radius:50%;
+    background: var(--bg3); border:2px solid var(--accent);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; color:var(--accent); font-size:1.1rem;
+    z-index:2;
+  }
+  .step h4 { color:#fff; font-size:1.05rem; margin-bottom:0.3rem; }
+  .step p { color:var(--text2); font-size:0.9rem; }
+
+  /* ── ROLES TABLE ── */
+  .role-compare {
+    display:grid; grid-template-columns: 1fr 1fr; gap:2rem;
+    margin-top:2rem;
+  }
+  .role-box {
+    background: var(--bg); border:1px solid var(--border);
+    border-radius:16px; padding:2rem;
+  }
+  .role-box h3 {
+    font-size:1.3rem; color:#fff; margin-bottom:1.5rem;
+    padding-bottom:0.75rem; border-bottom:1px solid var(--border);
+  }
+  .role-box ul { list-style:none; }
+  .role-box li {
+    padding:0.5rem 0; font-size:0.95rem; color:var(--text2);
+    display:flex; align-items:center; gap:0.5rem;
+  }
+  .role-box li::before { content:'✓'; color:var(--green); font-weight:700; }
+
+  /* ── SECURITY ── */
+  .security-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap:1rem; }
+  .sec-item {
+    background: var(--bg); border:1px solid var(--border);
+    border-radius:12px; padding:1.25rem 1.5rem;
+    display:flex; align-items:center; gap:1rem;
+  }
+  .sec-icon {
+    flex-shrink:0; width:40px; height:40px; border-radius:10px;
+    background: rgba(0,200,83,0.1); color:var(--green);
+    display:flex; align-items:center; justify-content:center; font-size:1.2rem;
+  }
+  .sec-item h4 { color:#fff; font-size:0.95rem; }
+  .sec-item p { color:var(--text2); font-size:0.8rem; }
+
+  /* ── TECH STACK ── */
+  .stack-grid { display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; }
+  .stack-item {
+    background: var(--bg); border:1px solid var(--border);
+    border-radius:12px; padding:1rem 1.5rem; text-align:center;
+    min-width:140px;
+  }
+  .stack-item .name { color:#fff; font-weight:600; font-size:1rem; }
+  .stack-item .desc { color:var(--text2); font-size:0.8rem; margin-top:0.25rem; }
+
+  /* ── STATS ── */
+  .stats { display:flex; flex-wrap:wrap; gap:2rem; justify-content:center; margin: 3rem 0; }
+  .stat { text-align:center; }
+  .stat .num { font-size:3rem; font-weight:800; color:var(--accent); }
+  .stat .label { color:var(--text2); font-size:0.9rem; }
+
+  /* ── TABLE ── */
+  table { width:100%; border-collapse:collapse; margin-top:1.5rem; }
+  th, td { padding:0.75rem 1rem; text-align:left; border-bottom:1px solid var(--border); }
+  th { color:#fff; font-weight:600; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.5px; }
+  td { color:var(--text2); font-size:0.9rem; }
+  tr:hover td { color:var(--text); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align:center; padding:3rem 2rem;
+    border-top:1px solid var(--border);
+    color:var(--text2); font-size:0.85rem;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width:768px) {
+    nav ul { display:none; }
+    .role-compare { grid-template-columns:1fr; }
+    section { padding: 3rem 1.25rem; }
+    .hero { padding: 5rem 1.25rem 3rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo"><span>A</span>ukcija</div>
+  <ul>
+    <li><a href="#features">Funkcionalnosti</a></li>
+    <li><a href="#types">Tipovi aukcija</a></li>
+    <li><a href="#how">Kako radi</a></li>
+    <li><a href="#roles">Uloge</a></li>
+    <li><a href="#security">Bezbednost</a></li>
+    <li><a href="#tech">Tehnologija</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <h1>Kompletna platforma za<br><span>online aukcije vozila</span></h1>
+    <p>Profesionalno resenje za organizaciju i upravljanje aukcijama vozila u realnom vremenu. Podrska za vise tipova aukcija, automatizovani tok rada i mobilna aplikacija.</p>
+    <div class="hero-badges">
+      <span>Real-time licitiranje</span>
+      <span>4 tipa aukcija</span>
+      <span>PWA mobilna app</span>
+      <span>Automatski lifecycle</span>
+      <span>Enterprise bezbednost</span>
+      <span>Visejezicna podrska</span>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<section>
+  <div class="stats">
+    <div class="stat">
+      <div class="num">4</div>
+      <div class="label">Tipa aukcija</div>
+    </div>
+    <div class="stat">
+      <div class="num">2</div>
+      <div class="label">Korisnicke uloge</div>
+    </div>
+    <div class="stat">
+      <div class="num">2</div>
+      <div class="label">Valute (RSD / EUR)</div>
+    </div>
+    <div class="stat">
+      <div class="num">2</div>
+      <div class="label">Jezika (SR / EN)</div>
+    </div>
+    <div class="stat">
+      <div class="num">&lt;1s</div>
+      <div class="label">Real-time latencija</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="inner">
+    <h2 class="section-title">Funkcionalnosti</h2>
+    <p class="section-subtitle">Sve sto vam je potrebno za profesionalno upravljanje aukcijama</p>
+    <div class="features">
+
+      <div class="feature-card">
+        <div class="feature-icon ic-red">&#9889;</div>
+        <h3>Real-time licitiranje</h3>
+        <p>Svaka ponuda se prikazuje svim ucesnicima u realnom vremenu kroz WebSocket konekciju. Nema potrebe za osvezavanjem stranice.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon ic-blue">&#128176;</div>
+        <h3>Buy Now opcija</h3>
+        <p>Opciona mogucnost trenutne kupovine po fiksnoj ceni. Kada kupac koristi Buy Now, aukcija se automatski zavrsava.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon ic-green">&#128202;</div>
+        <h3>Automatski lifecycle</h3>
+        <p>Aukcije se automatski pokrecu i zavrsavaju prema zakazanom vremenu. Sistem sam odredjuje pobednika i salje obavestenja.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon ic-orange">&#128241;</div>
+        <h3>PWA mobilna aplikacija</h3>
+        <p>Instalira se direktno iz browsera na telefon. Radi kao native aplikacija sa fullscreen modom. Automatski se azurira pri svakom deploy-u.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon ic-purple">&#128276;</div>
+        <h3>Push obavestenja</h3>
+        <p>Korisnici dobijaju obavestenja u realnom vremenu: preteceni su, aukcija je zavrsena, pobedili su, novi bid je stigao.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon ic-red">&#128100;</div>
+        <h3>Sistem pozivnica</h3>
+        <p>Zatvorena platforma - samo pozvani korisnici mogu pristupiti. Admin salje pozivnicu na email, korisnik aktivira nalog.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon ic-blue">&#128196;</div>
+        <h3>Rezervna cena</h3>
+        <p>Admin moze postaviti minimalnu cenu ispod koje se vozilo ne prodaje. Opciono vidljiva ili skrivena od kupaca.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon ic-green">&#127760;</div>
+        <h3>Visejezicnost (SR / EN)</h3>
+        <p>Kompletni interfejs na srpskom i engleskom jeziku. Korisnik bira jezik u podesavanjima.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon ic-orange">&#127763;</div>
+        <h3>Tamna i svetla tema</h3>
+        <p>Potpuna podrska za dark i light mode. Automatski se prilagodjava sistemskim podesavanjima ili se bira rucno.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon ic-purple">&#128247;</div>
+        <h3>Galerija slika vozila</h3>
+        <p>Upload vise fotografija po vozilu sa drag-and-drop interfejsom. Automatska validacija tipa i velicine fajla.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon ic-red">&#128200;</div>
+        <h3>Dashboard sa statistikama</h3>
+        <p>Admin ima pregled ukupnog broja aukcija, korisnika, ponuda i aktivnih aukcija na jednom mestu.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon ic-blue">&#128274;</div>
+        <h3>Kompletna bezbednost</h3>
+        <p>CSRF zastita, rate limiting, brute force zastita, audit log, security headers, validacija upload-a, password politika.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- AUCTION TYPES -->
+<section id="types">
+  <h2 class="section-title">4 tipa aukcija</h2>
+  <p class="section-subtitle">Svaki tip je dizajniran za razlicit scenario prodaje</p>
+  <div class="types-grid">
+
+    <div class="type-card">
+      <div class="type-tag">Sealed</div>
+      <h3>Zatvorena aukcija</h3>
+      <p>
+        Kupci daju ponude bez uvida u ponude drugih.<br><br>
+        Niko ne vidi tudje ponude dok aukcija traje.<br>
+        Kada se zavrsi, otkrivaju se sve ponude i pobednik.<br><br>
+        <strong>Idealno za:</strong> vredna vozila gde zelite fer konkurenciju bez uticaja drugih ponuda.
+      </p>
+    </div>
+
+    <div class="type-card">
+      <div class="type-tag">Open</div>
+      <h3>Otvorena aukcija</h3>
+      <p>
+        Klasicna aukcija sa punom transparentnoscu.<br><br>
+        Svi vide trenutnu najvecu ponudu, ko je dao i koliko ponuda ima.<br>
+        Svaka nova ponuda mora biti veca od prethodne.<br><br>
+        <strong>Idealno za:</strong> standardne aukcije gde zelite maksimalnu konkurenciju.
+      </p>
+    </div>
+
+    <div class="type-card">
+      <div class="type-tag">Indicator</div>
+      <h3>Indikatorska aukcija</h3>
+      <p>
+        Svaki kupac vidi samo svoje ponude i indikator pozicije.<br><br>
+        Kupac zna da li je trenutno najvisji ponudjac ili ne.<br>
+        Vidi najvecu ponudu, ali ne zna ko ju je dao.<br><br>
+        <strong>Idealno za:</strong> aukcije gde zelite da motivishete kupce da povecaju ponude.
+      </p>
+    </div>
+
+    <div class="type-card">
+      <div class="type-tag">Anonymous</div>
+      <h3>Anonimna aukcija</h3>
+      <p>
+        Svi vide ponude, ali ne znaju ko je dao koju.<br><br>
+        Prikazuje se lista ponuda bez identiteta ponudjaca.<br>
+        Kupac zna samo svoju poziciju.<br><br>
+        <strong>Idealno za:</strong> aukcije gde zelite transparentnost cena uz privatnost ucesnika.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="inner">
+    <h2 class="section-title">Kako radi</h2>
+    <p class="section-subtitle">Kompletan tok od kreiranja vozila do zavrsene aukcije</p>
+
+    <h3 style="color:#fff; margin-bottom:1.5rem; font-size:1.2rem;">&#128736; Admin tok</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Kreiraj vozilo</h4>
+          <p>Unesite naziv, opis, specifikacije (godina, kilometraza, gorivo, menjac, snaga, boja) i uploadujte fotografije. Sistem automatski validira format i velicinu slika.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Kreiraj aukciju</h4>
+          <p>Izaberite vozilo, tip aukcije, valutu, pocetnu i rezervnu cenu, vreme pocetka i zavrsetka. Opciono ukljucite Buy Now sa fiksnom cenom. Aukcija se kreira u statusu DRAFT.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Pokretanje aukcije</h4>
+          <p>Rucno pokrenite aukciju klikom na "Start" ili sacekajte da se automatski pokrene u zakazano vreme. Status prelazi u LIVE i kupci mogu da licitiraju.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Pracenje u realnom vremenu</h4>
+          <p>Dok aukcija traje, admin vidi sve ponude, ko je ponudio koliko, ukupan broj ponuda. Obavestenja stizu za svaku novu ponudu.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Zavrsetak aukcije</h4>
+          <p>Aukcija se automatski zavrsava u zakazano vreme ili admin moze rucno da je zavrsi. Sistem odredjuje pobednika (ako je rezervna cena dostignuta), salje obavestenja pobedniku i gubitnicima.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div>
+          <h4>Arhiviranje</h4>
+          <p>Zavrsene aukcije se mogu arhivirati radi ciscenja. Arhivirane aukcije se mogu i vratiti nazad po potrebi.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="color:#fff; margin:3rem 0 1.5rem; font-size:1.2rem;">&#128100; Kupac tok</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Aktivacija naloga</h4>
+          <p>Kupac dobija pozivnicu na email sa linkom. Klikom na link postavlja ime i lozinku (min 8 karaktera, veliko slovo, malo slovo, broj).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Pregled aktivnih aukcija</h4>
+          <p>Lista svih aktivnih aukcija sa slikama vozila, tipom aukcije, brojem ponuda i preostalim vremenom.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Licitiranje</h4>
+          <p>Kupac unosi iznos ponude. Sistem odmah validira da li je ponuda veca od trenutne najvece. Real-time indikator pokazuje da li ste trenutno najvisji ponudjac.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Buy Now (opciono)</h4>
+          <p>Ako je Buy Now omogucen, kupac moze odmah kupiti vozilo po fiksnoj ceni. Aukcija se trenutno zavrsava.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Rezultati</h4>
+          <p>Nakon zavrsetka aukcije, kupac vidi da li je pobedio. Pobednik dobija obavestenje sa finalni informacijama. Moze pregledati sve svoje pobede u sekciji "Dobijene aukcije".</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROLES -->
+<section id="roles">
+  <div class="inner">
+    <h2 class="section-title">Korisnicke uloge</h2>
+    <p class="section-subtitle">Jasna podela odgovornosti izmedju administratora i kupaca</p>
+    <div class="role-compare">
+
+      <div class="role-box">
+        <h3>&#128119; Administrator</h3>
+        <ul>
+          <li>Dashboard sa statistikama i pregledom</li>
+          <li>Kreiranje i upravljanje vozilima</li>
+          <li>Kreiranje i upravljanje aukcijama</li>
+          <li>Pokretanje i zaustavljanje aukcija</li>
+          <li>Upload fotografija vozila</li>
+          <li>Slanje pozivnica novim korisnicima</li>
+          <li>Aktivacija i deaktivacija naloga</li>
+          <li>Brisanje korisnika</li>
+          <li>Pregled svih ponuda i detalja</li>
+          <li>Obavestenja o svim novim ponudama</li>
+          <li>Pristup audit logu aktivnosti</li>
+        </ul>
+      </div>
+
+      <div class="role-box">
+        <h3>&#128100; Kupac</h3>
+        <ul>
+          <li>Pregled aktivnih i zavrsenih aukcija</li>
+          <li>Licitiranje na aktivnim aukcijama</li>
+          <li>Buy Now kupovina (kada je omogucena)</li>
+          <li>Real-time indikator pozicije</li>
+          <li>Obavestenja: preteceni, pobeda, poraz</li>
+          <li>Pregled sopstvenih ponuda</li>
+          <li>Pregled dobijenih aukcija</li>
+          <li>Izbor jezika (srpski / engleski)</li>
+          <li>Izbor teme (tamna / svetla)</li>
+          <li>PWA instalacija na mobilni uredjaj</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- STATUS FLOW -->
+<section>
+  <div class="inner">
+    <h2 class="section-title">Lifecycle aukcije</h2>
+    <p class="section-subtitle">Jasno definisane tranzicije statusa</p>
+    <table>
+      <thead>
+        <tr><th>Trenutni status</th><th>Moguce tranzicije</th><th>Kako se desava</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:#fff;">DRAFT</strong> (Nacrt)</td>
+          <td>LIVE, CANCELLED</td>
+          <td>Admin klikne "Start" ili se automatski pokrene u zakazano vreme</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--green);">LIVE</strong> (Aktivna)</td>
+          <td>ENDED, CANCELLED</td>
+          <td>Admin klikne "End", istekne vreme, ili kupac koristi Buy Now</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--text2);">ENDED</strong> (Zavrsena)</td>
+          <td>ARCHIVED</td>
+          <td>Admin arhivira aukciju</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--accent);">CANCELLED</strong> (Otkazana)</td>
+          <td>ARCHIVED</td>
+          <td>Admin arhivira otkazanu aukciju</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--text2);">ARCHIVED</strong> (Arhivirana)</td>
+          <td>ENDED / CANCELLED</td>
+          <td>Admin moze da vrati aukciju iz arhive</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- NOTIFICATIONS TABLE -->
+<section>
+  <div class="inner">
+    <h2 class="section-title">Sistem obavestenja</h2>
+    <p class="section-subtitle">Automatska obavestenja za sve bitne dogadjaje</p>
+    <table>
+      <thead>
+        <tr><th>Dogadjaj</th><th>Ko dobija</th><th>Kanal</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Nova ponuda</td><td>Svi admini</td><td>Real-time + notifikacija</td></tr>
+        <tr><td>Pretecena ponuda</td><td>Prethodni najvisji ponudjac</td><td>Real-time + notifikacija</td></tr>
+        <tr><td>Aukcija pokrenuta</td><td>Svi na stranici aukcije</td><td>Real-time</td></tr>
+        <tr><td>Aukcija zavrsena</td><td>Svi ucesnici</td><td>Real-time + notifikacija</td></tr>
+        <tr><td>Pobeda na aukciji</td><td>Pobednik</td><td>Real-time + notifikacija + email</td></tr>
+        <tr><td>Poraz na aukciji</td><td>Svi ostali ucesnici</td><td>Real-time + notifikacija</td></tr>
+        <tr><td>Buy Now kupovina</td><td>Kupac + svi ucesnici</td><td>Real-time + notifikacija</td></tr>
+        <tr><td>Pozivnica</td><td>Pozvani korisnik</td><td>Email</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SECURITY -->
+<section id="security">
+  <div class="inner">
+    <h2 class="section-title">Bezbednost</h2>
+    <p class="section-subtitle">Enterprise-nivo zastite podataka i transakcija</p>
+    <div class="security-grid">
+      <div class="sec-item">
+        <div class="sec-icon">&#128274;</div>
+        <div><h4>CSRF zastita</h4><p>Validacija Origin headera na svim mutacijama</p></div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon">&#128737;</div>
+        <div><h4>Security headers</h4><p>CSP, HSTS, X-Frame-Options, nosniff, Referrer-Policy</p></div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon">&#9202;</div>
+        <div><h4>Rate limiting</h4><p>Ogranicen broj zahteva po korisniku/IP adresi</p></div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon">&#128272;</div>
+        <div><h4>Brute force zastita</h4><p>Zakljucavanje naloga nakon 10 neuspelih pokusaja</p></div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon">&#128221;</div>
+        <div><h4>Audit log</h4><p>Kompletno logovanje svih akcija sa IP adresama</p></div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon">&#128273;</div>
+        <div><h4>Password politika</h4><p>Min 8 karaktera, veliko slovo, malo slovo, broj</p></div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon">&#128190;</div>
+        <div><h4>Validacija upload-a</h4><p>Magic bytes provera - samo prave slike prolaze</p></div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon">&#128170;</div>
+        <div><h4>Serializable transakcije</h4><p>Race condition zastita na ponudama i Buy Now</p></div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon">&#128683;</div>
+        <div><h4>Zatvorena platforma</h4><p>Samo pozvani korisnici - nema javne registracije</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section id="tech">
+  <div class="inner">
+    <h2 class="section-title">Tehnicki stack</h2>
+    <p class="section-subtitle">Moderan, proveren stack spreman za produkciju</p>
+    <div class="stack-grid">
+      <div class="stack-item"><div class="name">Next.js</div><div class="desc">Full-stack React framework</div></div>
+      <div class="stack-item"><div class="name">React</div><div class="desc">UI biblioteka</div></div>
+      <div class="stack-item"><div class="name">TypeScript</div><div class="desc">Tipiziran kod</div></div>
+      <div class="stack-item"><div class="name">PostgreSQL</div><div class="desc">Relaciona baza</div></div>
+      <div class="stack-item"><div class="name">Prisma</div><div class="desc">ORM za bazu</div></div>
+      <div class="stack-item"><div class="name">Pusher</div><div class="desc">Real-time WebSocket</div></div>
+      <div class="stack-item"><div class="name">NextAuth.js</div><div class="desc">Autentifikacija</div></div>
+      <div class="stack-item"><div class="name">Tailwind CSS</div><div class="desc">Utility-first CSS</div></div>
+      <div class="stack-item"><div class="name">shadcn/ui</div><div class="desc">UI komponente</div></div>
+      <div class="stack-item"><div class="name">Upstash Redis</div><div class="desc">Rate limiting</div></div>
+      <div class="stack-item"><div class="name">Resend</div><div class="desc">Transakcioni email</div></div>
+      <div class="stack-item"><div class="name">Vercel</div><div class="desc">Hosting & CI/CD</div></div>
+      <div class="stack-item"><div class="name">Zod</div><div class="desc">Schema validacija</div></div>
+      <div class="stack-item"><div class="name">PWA</div><div class="desc">Mobilna aplikacija</div></div>
+    </div>
+
+    <div style="margin-top:3rem;">
+      <h3 style="color:#fff; margin-bottom:1rem;">Infrastruktura i deploy</h3>
+      <table>
+        <tbody>
+          <tr><td><strong style="color:#fff;">Hosting</strong></td><td>Vercel - automatski deploy iz Git-a, globalni CDN, serverless funkcije</td></tr>
+          <tr><td><strong style="color:#fff;">Baza podataka</strong></td><td>PostgreSQL (Neon ili Prisma Postgres) - serverless, automatski backup</td></tr>
+          <tr><td><strong style="color:#fff;">Real-time</strong></td><td>Pusher - upravljani WebSocket servis, privatni i javni kanali</td></tr>
+          <tr><td><strong style="color:#fff;">Email</strong></td><td>Resend - pouzdana dostava pozivnica i obavestenja</td></tr>
+          <tr><td><strong style="color:#fff;">Rate limiting</strong></td><td>Upstash Redis - serverless Redis za zastitu od zloupotreba</td></tr>
+          <tr><td><strong style="color:#fff;">Cron</strong></td><td>Vercel Cron - automatsko pokretanje i zavrsetak aukcija</td></tr>
+          <tr><td><strong style="color:#fff;">Mobilna app</strong></td><td>PWA - instalira se iz browsera, automatski update pri deploy-u</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT BUYER CAN SEE PER AUCTION TYPE -->
+<section>
+  <div class="inner">
+    <h2 class="section-title">Vidljivost podataka po tipu aukcije</h2>
+    <p class="section-subtitle">Sta kupac vidi dok aukcija traje vs. nakon zavrsetka</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Podatak</th>
+          <th>Sealed</th>
+          <th>Open</th>
+          <th>Indicator</th>
+          <th>Anonymous</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Sopstvene ponude</td>
+          <td style="color:var(--green);">Da</td>
+          <td style="color:var(--green);">Da</td>
+          <td style="color:var(--green);">Da</td>
+          <td style="color:var(--green);">Da</td>
+        </tr>
+        <tr>
+          <td>Tudje ponude</td>
+          <td style="color:var(--accent);">Ne</td>
+          <td style="color:var(--green);">Da (ime + iznos)</td>
+          <td style="color:var(--accent);">Ne</td>
+          <td style="color:var(--orange);">Da (samo iznos)</td>
+        </tr>
+        <tr>
+          <td>Najveca ponuda</td>
+          <td style="color:var(--accent);">Ne</td>
+          <td style="color:var(--green);">Da</td>
+          <td style="color:var(--green);">Da</td>
+          <td style="color:var(--green);">Da</td>
+        </tr>
+        <tr>
+          <td>"Vi ste najvisji"</td>
+          <td style="color:var(--accent);">Ne</td>
+          <td style="color:var(--green);">Da</td>
+          <td style="color:var(--green);">Da</td>
+          <td style="color:var(--green);">Da</td>
+        </tr>
+        <tr>
+          <td>Broj ponuda</td>
+          <td style="color:var(--accent);">Ne</td>
+          <td style="color:var(--green);">Da</td>
+          <td style="color:var(--orange);">Opciono</td>
+          <td style="color:var(--green);">Da</td>
+        </tr>
+        <tr>
+          <td>Sve (nakon zavrsetka)</td>
+          <td style="color:var(--green);">Da</td>
+          <td style="color:var(--green);">Da</td>
+          <td style="color:var(--green);">Da</td>
+          <td style="color:var(--green);">Da</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- AUDIT LOG -->
+<section>
+  <div class="inner">
+    <h2 class="section-title">Audit log - pracenje aktivnosti</h2>
+    <p class="section-subtitle">Svaka bitna akcija se automatski belezi u bazu podataka</p>
+    <table>
+      <thead>
+        <tr><th>Akcija</th><th>Opis</th><th>Podaci koji se cuvaju</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>LOGIN_SUCCESS</td><td>Uspesna prijava</td><td>Korisnik, IP adresa</td></tr>
+        <tr><td>LOGIN_FAILED</td><td>Neuspesna prijava</td><td>Email, razlog (pogresan password, zakljucan nalog), IP</td></tr>
+        <tr><td>BID_PLACED</td><td>Data ponuda</td><td>Korisnik, aukcija, iznos, IP</td></tr>
+        <tr><td>BUY_NOW</td><td>Buy Now kupovina</td><td>Korisnik, aukcija, cena, IP</td></tr>
+        <tr><td>AUCTION_CREATED</td><td>Kreirana aukcija</td><td>Admin, ID aukcije, IP</td></tr>
+        <tr><td>AUCTION_STATUS_CHANGED</td><td>Promena statusa</td><td>Admin, stari status, novi status, IP</td></tr>
+        <tr><td>USER_INVITED</td><td>Poslata pozivnica</td><td>Admin, email, uloga, IP</td></tr>
+        <tr><td>USER_STATUS_CHANGED</td><td>Aktiviran/deaktiviran nalog</td><td>Admin, korisnik, novi status, IP</td></tr>
+        <tr><td>USER_DELETED</td><td>Obrisan nalog</td><td>Admin, obrisan korisnik, IP</td></tr>
+        <tr><td>INVITE_ACCEPTED</td><td>Prihvacena pozivnica</td><td>Korisnik, IP</td></tr>
+        <tr><td>FILE_UPLOADED</td><td>Upload slike</td><td>Admin, broj fajlova, putanje, IP</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- RATE LIMITS -->
+<section>
+  <div class="inner">
+    <h2 class="section-title">Rate limiting - zastita od zloupotreba</h2>
+    <p class="section-subtitle">Ogranicavanje broja zahteva sprecava automatizovane napade</p>
+    <table>
+      <thead>
+        <tr><th>Akcija</th><th>Limit</th><th>Identifikator</th><th>Blokada</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Prijava (login)</td><td>5 pokusaja / 15 min</td><td>IP adresa</td><td>429 + Retry-After</td></tr>
+        <tr><td>Licitiranje (bid)</td><td>30 ponuda / min</td><td>ID korisnika</td><td>429 + Retry-After</td></tr>
+        <tr><td>Pozivnice (invite)</td><td>10 / sat</td><td>ID admina</td><td>429 + Retry-After</td></tr>
+        <tr><td>Upload slika</td><td>20 / sat</td><td>ID admina</td><td>429 + Retry-After</td></tr>
+        <tr><td>Javni API endpointi</td><td>100 / min</td><td>IP adresa</td><td>429 + Retry-After</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div style="margin-bottom:0.5rem;">
+    <span style="font-size:1.5rem; font-weight:800; color:#fff;"><span style="color:var(--accent);">A</span>ukcija</span>
+  </div>
+  <p>Kompletna platforma za online aukcije vozila</p>
+</footer>
+
+</body>
+</html>

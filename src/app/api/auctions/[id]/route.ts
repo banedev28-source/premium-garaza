@@ -183,11 +183,16 @@ export async function PATCH(
       }
 
       // Use optimistic locking: only update if status hasn't changed
-      const updated = await prisma.auction.update({
-        where: { id, status: auction.status },
-        data: { status: "ENDED", winnerId, finalPrice },
-        include: { vehicle: true },
-      });
+      let updated;
+      try {
+        updated = await prisma.auction.update({
+          where: { id, status: auction.status },
+          data: { status: "ENDED", winnerId, finalPrice },
+          include: { vehicle: true },
+        });
+      } catch {
+        return NextResponse.json({ error: "Status aukcije je vec promenjen" }, { status: 409 });
+      }
 
       // Broadcast + notifications in parallel
       const notifications: Promise<unknown>[] = [
@@ -260,11 +265,16 @@ export async function PATCH(
 
     // For other status changes (LIVE, CANCELLED, ARCHIVED)
     // Use optimistic locking: only update if status hasn't changed
-    const updated = await prisma.auction.update({
-      where: { id, status: auction.status },
-      data: { status: body.status as "LIVE" | "CANCELLED" | "ARCHIVED" },
-      include: { vehicle: true },
-    });
+    let updated;
+    try {
+      updated = await prisma.auction.update({
+        where: { id, status: auction.status },
+        data: { status: body.status as "LIVE" | "CANCELLED" | "ARCHIVED" },
+        include: { vehicle: true },
+      });
+    } catch {
+      return NextResponse.json({ error: "Status aukcije je vec promenjen" }, { status: 409 });
+    }
 
     {
       const ip = await getClientIp();
@@ -292,20 +302,42 @@ export async function PATCH(
   }
 
   // Only allow safe, known fields to be updated
+  const data: Record<string, unknown> = {
+    ...(body.startTime != null && { startTime: new Date(body.startTime) }),
+    ...(body.endTime != null && { endTime: new Date(body.endTime) }),
+    ...(body.currency != null && ["RSD", "EUR"].includes(body.currency) && { currency: body.currency }),
+    ...(body.startingPrice !== undefined && { startingPrice: body.startingPrice }),
+    ...(body.reservePrice !== undefined && { reservePrice: body.reservePrice }),
+    ...(typeof body.showReservePrice === "boolean" && { showReservePrice: body.showReservePrice }),
+    ...(body.auctionType != null && ["SEALED", "OPEN", "INDICATOR", "ANONYMOUS"].includes(body.auctionType) && { auctionType: body.auctionType }),
+    ...(typeof body.showBidCount === "boolean" && { showBidCount: body.showBidCount }),
+    ...(typeof body.buyNowEnabled === "boolean" && { buyNowEnabled: body.buyNowEnabled }),
+    ...(body.buyNowPrice !== undefined && { buyNowPrice: body.buyNowPrice }),
+  };
+
+  // Validate time relationship after merge with existing values
+  const effectiveStart = data.startTime ? new Date(data.startTime as string) : auction.startTime;
+  const effectiveEnd = data.endTime ? new Date(data.endTime as string) : auction.endTime;
+  if (effectiveEnd <= effectiveStart) {
+    return NextResponse.json(
+      { error: "Vreme zavrsetka mora biti posle vremena pocetka" },
+      { status: 400 }
+    );
+  }
+
+  // Validate buyNowPrice >= startingPrice after merge
+  const effectiveBuyNow = data.buyNowPrice !== undefined ? data.buyNowPrice as number : Number(auction.buyNowPrice);
+  const effectiveStarting = data.startingPrice !== undefined ? data.startingPrice as number : Number(auction.startingPrice);
+  if (effectiveBuyNow && effectiveStarting && effectiveBuyNow < effectiveStarting) {
+    return NextResponse.json(
+      { error: "Buy Now cena mora biti veca ili jednaka pocetnoj ceni" },
+      { status: 400 }
+    );
+  }
+
   const updated = await prisma.auction.update({
     where: { id },
-    data: {
-      ...(body.startTime != null && { startTime: new Date(body.startTime) }),
-      ...(body.endTime != null && { endTime: new Date(body.endTime) }),
-      ...(body.currency != null && ["RSD", "EUR"].includes(body.currency) && { currency: body.currency }),
-      ...(body.startingPrice !== undefined && { startingPrice: body.startingPrice }),
-      ...(body.reservePrice !== undefined && { reservePrice: body.reservePrice }),
-      ...(typeof body.showReservePrice === "boolean" && { showReservePrice: body.showReservePrice }),
-      ...(body.auctionType != null && ["SEALED", "OPEN", "INDICATOR", "ANONYMOUS"].includes(body.auctionType) && { auctionType: body.auctionType }),
-      ...(typeof body.showBidCount === "boolean" && { showBidCount: body.showBidCount }),
-      ...(typeof body.buyNowEnabled === "boolean" && { buyNowEnabled: body.buyNowEnabled }),
-      ...(body.buyNowPrice !== undefined && { buyNowPrice: body.buyNowPrice }),
-    },
+    data,
     include: { vehicle: true },
   });
 
