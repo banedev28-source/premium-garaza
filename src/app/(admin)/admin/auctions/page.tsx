@@ -24,6 +24,7 @@ import {
 import { useI18n } from "@/components/providers/i18n-provider";
 import { toast } from "sonner";
 import Link from "next/link";
+import { ListSkeleton } from "@/components/ui/skeleton";
 
 type Vehicle = {
   id: string;
@@ -147,7 +148,7 @@ export default function AdminAuctionsPage() {
     return a.status === "ARCHIVED";
   });
 
-  if (loading) return <div>{t("common.loading")}</div>;
+  if (loading) return <div className="space-y-6"><ListSkeleton count={5} /></div>;
 
   return (
     <div className="space-y-6">
@@ -321,6 +322,7 @@ export default function AdminAuctionsPage() {
                   <img
                     src={auction.vehicle.images[0] as string}
                     alt=""
+                    loading="lazy"
                     className="h-16 w-24 shrink-0 rounded object-cover"
                   />
                 )}

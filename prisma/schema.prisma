@@ -85,6 +85,8 @@ model Vehicle {
   auction        Auction?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  @@index([createdById])
 }
 
 model Auction {
@@ -114,6 +116,8 @@ model Auction {
   @@index([status])
   @@index([startTime])
   @@index([endTime])
+  @@index([createdById])
+  @@index([winnerId])
 }
 
 model Bid {

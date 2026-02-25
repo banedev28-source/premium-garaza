@@ -18,13 +18,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Aukcija - Platforma za aukcije vozila",
-  description: "Platforma za online aukcije vozila",
+  title: "Premium Garaza - Aukcije premium vozila",
+  description: "Platforma za online aukcije premium vozila",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Aukcija",
+    title: "Premium Garaza",
   },
   other: {
     "mobile-web-app-capable": "yes",

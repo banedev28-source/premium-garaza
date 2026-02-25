@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "Aukcija - Platforma za aukcije vozila",
-  "short_name": "Aukcija",
-  "description": "Platforma za online aukcije vozila",
+  "name": "Premium Garaza - Aukcije premium vozila",
+  "short_name": "Premium Garaza",
+  "description": "Platforma za online aukcije premium vozila",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
@@ -25,14 +25,14 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Aukcija Desktop"
+      "label": "Premium Garaza Desktop"
     },
     {
       "src": "/screenshot-narrow.png",
       "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Aukcija Mobile"
+      "label": "Premium Garaza Mobile"
     }
   ],
   "categories": ["business", "shopping"],

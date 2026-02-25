@@ -44,7 +44,7 @@ export default function LoginPage() {
             {t("common.appName")}
           </CardTitle>
           <p className="text-muted-foreground text-sm">
-            Platforma za aukcije vozila
+            Aukcije premium vozila
           </p>
         </CardHeader>
         <CardContent>

@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/auction-lifecycle",
-      "schedule": "* * * * *"
+      "schedule": "*/5 * * * *"
     }
   ]
 }

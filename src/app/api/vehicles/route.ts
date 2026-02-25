@@ -19,6 +19,7 @@ export async function GET() {
       },
     },
     orderBy: { createdAt: "desc" },
+    take: 200,
   });
 
   return NextResponse.json(vehicles);

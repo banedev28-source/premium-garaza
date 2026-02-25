@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { useAuction } from "@/hooks/useAuction";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AuctionDetailPage({
   params,
@@ -101,7 +102,7 @@ export default function AuctionDetailPage({
     }
   }
 
-  if (loading) return <div className="p-4">{t("common.loading")}</div>;
+  if (loading) return <div className="grid gap-6 lg:grid-cols-2"><Skeleton className="aspect-video rounded-lg" /><div className="space-y-4"><Skeleton className="h-24 rounded-lg" /><Skeleton className="h-32 rounded-lg" /></div></div>;
   if (!auction) return <div className="p-4">Not found</div>;
 
   const isLive = auction.status === "LIVE";

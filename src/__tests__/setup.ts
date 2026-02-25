@@ -94,8 +94,7 @@ vi.mock("@/lib/audit", () => ({
 vi.mock("@/lib/email", () => ({
   sendInviteEmail: vi.fn().mockResolvedValue(undefined),
   sendAuctionWonEmail: vi.fn().mockResolvedValue(undefined),
-  sendOutbidEmail: vi.fn().mockResolvedValue(undefined),
-  sendAuctionLostEmail: vi.fn().mockResolvedValue(undefined),
+  sendNewAuctionEmail: vi.fn().mockResolvedValue(undefined),
 }));
 
 // ── Rate limit mock ──────────────────────────────────────────────

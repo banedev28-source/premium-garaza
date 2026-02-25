@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { toast } from "sonner";
+import { ListSkeleton } from "@/components/ui/skeleton";
 
 type UserItem = {
   id: string;
@@ -114,7 +115,7 @@ export default function UsersPage() {
     DEACTIVATED: "destructive",
   };
 
-  if (loading) return <div>{t("common.loading")}</div>;
+  if (loading) return <div className="space-y-6"><ListSkeleton count={5} /></div>;
 
   return (
     <div className="space-y-6">

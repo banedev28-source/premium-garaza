@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useI18n } from "@/components/providers/i18n-provider";
 import Link from "next/link";
+import { ListSkeleton } from "@/components/ui/skeleton";
 
 type BidItem = {
   id: string;
@@ -26,13 +27,13 @@ export default function MyBidsPage() {
 
   useEffect(() => {
     fetch("/api/my-bids")
-      .then((res) => res.json())
+      .then((res) => { if (!res.ok) throw new Error(); return res.json(); })
       .then(setBids)
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="p-4">{t("common.loading")}</div>;
+  if (loading) return <div className="space-y-6"><h2 className="text-2xl font-bold">{t("nav.myBids")}</h2><ListSkeleton count={4} /></div>;
 
   // Group bids by auction
   const auctionMap = new Map<string, BidItem[]>();
@@ -66,6 +67,7 @@ export default function MyBidsPage() {
                       <img
                         src={auction.vehicle.images[0]}
                         alt=""
+                        loading="lazy"
                         className="h-16 w-24 rounded object-cover"
                       />
                     )}

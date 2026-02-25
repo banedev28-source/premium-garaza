@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useI18n } from "@/components/providers/i18n-provider";
 import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type AuctionSummary = {
   id: string;
@@ -22,8 +23,9 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetch("/api/auctions")
-      .then((res) => res.json())
+      .then((res) => { if (!res.ok) throw new Error(); return res.json(); })
       .then(setAuctions)
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
@@ -44,7 +46,7 @@ export default function AdminDashboard() {
   };
 
   if (loading) {
-    return <div className="p-4">{t("common.loading")}</div>;
+    return <div className="space-y-6"><div className="grid gap-4 grid-cols-2 lg:grid-cols-4">{Array.from({length:4}).map((_,i)=><Skeleton key={i} className="h-24 rounded-lg" />)}</div><Skeleton className="h-64 rounded-lg" /></div>;
   }
 
   return (

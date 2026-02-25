@@ -1,4 +1,4 @@
-const CACHE_NAME = "aukcija-v1";
+const CACHE_NAME = "premium-garaza-v1";
 
 // Static assets to pre-cache on install
 const PRECACHE_URLS = ["/login", "/offline"];

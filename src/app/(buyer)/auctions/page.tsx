@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useI18n } from "@/components/providers/i18n-provider";
 import Link from "next/link";
+import { GridSkeleton } from "@/components/ui/skeleton";
 
 type AuctionListItem = {
   id: string;
@@ -31,12 +32,14 @@ export default function AuctionsPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"live" | "ended">("live");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const { t } = useI18n();
 
   useEffect(() => {
     fetch("/api/auctions")
-      .then((res) => res.json())
+      .then((res) => { if (!res.ok) throw new Error(); return res.json(); })
       .then(setAuctions)
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, []);
 
@@ -56,7 +59,8 @@ export default function AuctionsPage() {
     return `${hours}h ${minutes}m`;
   }
 
-  if (loading) return <div className="p-4">{t("common.loading")}</div>;
+  if (loading) return <div className="space-y-6"><GridSkeleton count={6} /></div>;
+  if (error) return <div className="p-8 text-center text-muted-foreground">{t("common.error")}</div>;
 
   return (
     <div className="space-y-6">
@@ -104,6 +108,7 @@ export default function AuctionsPage() {
                   <img
                     src={auction.vehicle.images[0]}
                     alt={auction.vehicle.name}
+                    loading="lazy"
                     className={`h-full w-full object-cover ${auction.status === "ENDED" ? "grayscale" : ""}`}
                   />
                 </div>

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { pusher } from "@/lib/pusher-server";
 import { NextRequest, NextResponse } from "next/server";
 import { audit, getClientIp } from "@/lib/audit";
+import { sendNewAuctionEmail } from "@/lib/email";
 
 export async function GET(
   _req: NextRequest,
@@ -287,6 +288,15 @@ export async function PATCH(
         auctionId: id,
         status: "LIVE",
       });
+
+      // Notify all active buyers about new auction
+      sendNewAuctionEmail(
+        updated.vehicle.name,
+        id,
+        updated.endTime,
+        updated.currency,
+        updated.startingPrice ? String(updated.startingPrice) : null
+      ).catch(() => {});
     }
 
     return NextResponse.json(updated);

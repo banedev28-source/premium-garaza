@@ -16,10 +16,12 @@ export async function GET(req: NextRequest) {
       winnerId: session.user.id,
       status: "ENDED",
     },
-    include: {
-      vehicle: {
-        select: { name: true, images: true },
-      },
+    select: {
+      id: true,
+      currency: true,
+      finalPrice: true,
+      endTime: true,
+      vehicle: { select: { name: true, images: true } },
     },
     orderBy: { endTime: "desc" },
     skip: (page - 1) * limit,

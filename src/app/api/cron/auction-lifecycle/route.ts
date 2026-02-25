@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { pusher } from "@/lib/pusher-server";
-import { sendAuctionWonEmail, sendAuctionLostEmail } from "@/lib/email";
+import { sendAuctionWonEmail, sendNewAuctionEmail } from "@/lib/email";
 import { NextRequest, NextResponse } from "next/server";
 
 // This endpoint is called by Vercel Cron to manage auction lifecycle
@@ -38,6 +38,15 @@ export async function GET(req: NextRequest) {
           auctionId: auction.id,
           status: "LIVE",
         });
+
+        // Notify all active buyers about new auction
+        sendNewAuctionEmail(
+          auction.vehicle.name,
+          auction.id,
+          auction.endTime,
+          auction.currency,
+          auction.startingPrice ? String(auction.startingPrice) : null
+        ).catch(() => {});
       } catch {
         // Status already changed by another process, skip
       }
