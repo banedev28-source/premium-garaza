@@ -38,7 +38,7 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://images.unsplash.com",
+              "img-src 'self' data: blob: https://images.unsplash.com https://*.public.blob.vercel-storage.com",
               "font-src 'self'",
               "connect-src 'self' wss://*.pusher.com https://*.pusher.com https://sockjs-*.pusher.com",
               "frame-ancestors 'none'",

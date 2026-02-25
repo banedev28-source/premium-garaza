@@ -1,10 +1,9 @@
 import { auth } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
 import { randomBytes } from "crypto";
 import { audit, getClientIp } from "@/lib/audit";
 import { uploadLimiter, checkRateLimit } from "@/lib/rate-limit";
+import { put } from "@vercel/blob";
 
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -57,9 +56,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No files" }, { status: 400 });
   }
 
-  const uploadDir = path.join(process.cwd(), "public", "uploads");
-  await mkdir(uploadDir, { recursive: true });
-
   const urls: string[] = [];
 
   for (const file of files) {
@@ -84,8 +80,12 @@ export async function POST(req: NextRequest) {
     // Use detected extension instead of client-provided one
     const filename = `${randomBytes(16).toString("hex")}.${detectedExt}`;
 
-    await writeFile(path.join(uploadDir, filename), buffer);
-    urls.push(`/uploads/${filename}`);
+    const blob = await put(`uploads/${filename}`, buffer, {
+      access: "public",
+      contentType: file.type,
+    });
+
+    urls.push(blob.url);
   }
 
   if (urls.length > 0) {
