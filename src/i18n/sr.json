@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Aukcija",
+    "appName": "Premium Garaza",
     "loading": "Ucitavanje...",
     "save": "Sacuvaj",
     "cancel": "Otkazi",
@@ -32,6 +32,7 @@
     "confirmPassword": "Potvrdite lozinku",
     "activateAccount": "Aktiviraj nalog",
     "inviteExpired": "Link za pozivnicu je istekao",
+    "passwordMismatch": "Lozinke se ne poklapaju",
     "accountActivated": "Nalog je uspesno aktiviran!"
   },
   "nav": {

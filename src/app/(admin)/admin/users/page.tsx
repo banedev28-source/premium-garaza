@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { toast } from "sonner";
+import { ListSkeleton } from "@/components/ui/skeleton";
 
 type UserItem = {
   id: string;
@@ -63,7 +64,7 @@ export default function UsersPage() {
 
     if (res.ok) {
       const data = await res.json();
-      const inviteLink = `${window.location.origin}/invite/${data.inviteToken}`;
+      const inviteLink = data.inviteLink;
       toast.success("Pozivnica poslata!", {
         description: inviteLink,
         duration: 30000,
@@ -114,7 +115,7 @@ export default function UsersPage() {
     DEACTIVATED: "destructive",
   };
 
-  if (loading) return <div>{t("common.loading")}</div>;
+  if (loading) return <div className="space-y-6"><ListSkeleton count={5} /></div>;
 
   return (
     <div className="space-y-6">

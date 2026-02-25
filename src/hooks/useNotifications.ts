@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { getPusherClient } from "@/lib/pusher-client";
 import { toast } from "sonner";
 import type { Notification, NotificationEvent } from "@/types";
@@ -8,6 +8,7 @@ import type { Notification, NotificationEvent } from "@/types";
 export function useNotifications(userId?: string) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const fetchRef = useRef<() => void>(() => {});
 
   const fetchNotifications = useCallback(async () => {
     try {
@@ -26,6 +27,11 @@ export function useNotifications(userId?: string) {
     fetchNotifications();
   }, [fetchNotifications]);
 
+  // Keep ref in sync with latest fetchNotifications
+  useEffect(() => {
+    fetchRef.current = fetchNotifications;
+  }, [fetchNotifications]);
+
   useEffect(() => {
     if (!userId) return;
 
@@ -37,14 +43,14 @@ export function useNotifications(userId?: string) {
       toast(data.title, { description: data.message });
 
       // Refetch from DB to avoid duplicates with temp IDs
-      fetchNotifications();
+      fetchRef.current();
     });
 
     return () => {
       channel.unbind_all();
       pusher.unsubscribe(`private-user-${userId}`);
     };
-  }, [userId, fetchNotifications]);
+  }, [userId]);
 
   const markAsRead = async (id: string) => {
     await fetch("/api/notifications", {

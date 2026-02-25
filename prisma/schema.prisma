@@ -66,9 +66,12 @@ model User {
 
   bids              Bid[]
   notifications     Notification[]
+  failedLoginAttempts Int        @default(0)
+  lockedUntil       DateTime?
   createdAuctions   Auction[]   @relation("CreatedAuctions")
   wonAuctions       Auction[]   @relation("WonAuctions")
   createdVehicles   Vehicle[]
+  auditLogs         AuditLog[]
 }
 
 model Vehicle {
@@ -82,6 +85,8 @@ model Vehicle {
   auction        Auction?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  @@index([createdById])
 }
 
 model Auction {
@@ -111,6 +116,8 @@ model Auction {
   @@index([status])
   @@index([startTime])
   @@index([endTime])
+  @@index([createdById])
+  @@index([winnerId])
 }
 
 model Bid {
@@ -141,4 +148,19 @@ model Notification {
 
   @@index([userId, read])
   @@index([userId, createdAt(sort: Desc)])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  targetId  String?
+  metadata  Json?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([action])
+  @@index([userId])
+  @@index([createdAt])
 }

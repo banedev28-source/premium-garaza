@@ -84,16 +84,37 @@ vi.mock("@/lib/pusher-server", () => ({
   pusher: mockPusher,
 }));
 
+// ── Audit mock ─────────────────────────────────────────────────────
+vi.mock("@/lib/audit", () => ({
+  audit: vi.fn(),
+  getClientIp: vi.fn().mockResolvedValue("127.0.0.1"),
+}));
+
 // ── Email mock ─────────────────────────────────────────────────────
 vi.mock("@/lib/email", () => ({
   sendInviteEmail: vi.fn().mockResolvedValue(undefined),
   sendAuctionWonEmail: vi.fn().mockResolvedValue(undefined),
-  sendOutbidEmail: vi.fn().mockResolvedValue(undefined),
-  sendAuctionLostEmail: vi.fn().mockResolvedValue(undefined),
+  sendNewAuctionEmail: vi.fn().mockResolvedValue(undefined),
+}));
+
+// ── Rate limit mock ──────────────────────────────────────────────
+vi.mock("@/lib/rate-limit", () => ({
+  checkRateLimit: vi.fn().mockResolvedValue(null),
+  bidLimiter: {},
+  loginLimiter: {},
+  inviteLimiter: {},
+  uploadLimiter: {},
+  publicApiLimiter: {},
 }));
 
 // ── Reset between tests ────────────────────────────────────────────
 beforeEach(() => {
   vi.clearAllMocks();
   resetMockSession();
+  // Default: user.findUnique returns active user (for status checks in bid/buy-now)
+  mockPrisma.user.findUnique.mockResolvedValue({
+    id: "buyer-1",
+    status: "ACTIVE",
+    role: "BUYER",
+  });
 });

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { pusher } from "@/lib/pusher-server";
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@/generated/prisma/client";
+import { audit, getClientIp } from "@/lib/audit";
 
 export async function POST(
   _req: NextRequest,
@@ -11,6 +12,15 @@ export async function POST(
   const session = await auth();
   if (!session?.user || session.user.role !== "BUYER") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Verify user is still active in DB (JWT may carry stale status)
+  const currentUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { status: true },
+  });
+  if (!currentUser || currentUser.status !== "ACTIVE") {
+    return NextResponse.json({ error: "Vas nalog je deaktiviran" }, { status: 403 });
   }
 
   const { id: auctionId } = await params;
@@ -73,22 +83,25 @@ export async function POST(
       distinct: ["userId"],
     });
 
-    for (const bidder of bidders) {
-      await prisma.notification.create({
-        data: {
-          userId: bidder.userId,
-          type: "AUCTION_END",
-          title: "Aukcija zavrsena",
-          message: `Aukcija za ${result.auction.vehicle.name} je zavrsena - neko je iskoristio Buy Now opciju`,
-          data: { auctionId },
-        },
-      });
-
-      await pusher.trigger(`private-user-${bidder.userId}`, "notification", {
-        type: "AUCTION_END",
-        title: "Aukcija zavrsena",
-        message: `Aukcija za ${result.auction.vehicle.name} je zavrsena`,
-      });
+    if (bidders.length > 0) {
+      await Promise.all([
+        prisma.notification.createMany({
+          data: bidders.map((bidder) => ({
+            userId: bidder.userId,
+            type: "AUCTION_END" as const,
+            title: "Aukcija zavrsena",
+            message: `Aukcija za ${result.auction.vehicle.name} je zavrsena - neko je iskoristio Buy Now opciju`,
+            data: { auctionId },
+          })),
+        }),
+        ...bidders.map((bidder) =>
+          pusher.trigger(`private-user-${bidder.userId}`, "notification", {
+            type: "AUCTION_END",
+            title: "Aukcija zavrsena",
+            message: `Aukcija za ${result.auction.vehicle.name} je zavrsena`,
+          })
+        ),
+      ]);
     }
 
     // Notify winner
@@ -100,6 +113,15 @@ export async function POST(
         message: `Uspesno ste kupili ${result.auction.vehicle.name} za ${result.auction.finalPrice} ${result.auction.currency}`,
         data: { auctionId },
       },
+    });
+
+    const ip = await getClientIp();
+    audit({
+      action: "BUY_NOW",
+      userId: session.user.id,
+      targetId: auctionId,
+      metadata: { price: Number(result.auction.finalPrice) },
+      ip,
     });
 
     return NextResponse.json({ success: true });

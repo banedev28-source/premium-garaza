@@ -17,14 +17,12 @@ export async function GET() {
       role: true,
       status: true,
       createdAt: true,
-      invitedBy: {
-        select: { name: true, email: true },
-      },
       _count: {
         select: { bids: true, wonAuctions: true },
       },
     },
     orderBy: { createdAt: "desc" },
+    take: 200,
   });
 
   return NextResponse.json(users);

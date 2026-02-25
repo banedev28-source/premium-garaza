@@ -11,6 +11,7 @@ export function useAuction(auctionId: string, userId?: string) {
   const [isHighest, setIsHighest] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const subscribedRef = useRef(false);
+  const fetchRef = useRef<() => void>(() => {});
 
   const fetchAuction = useCallback(async () => {
     try {
@@ -44,6 +45,11 @@ export function useAuction(auctionId: string, userId?: string) {
     fetchAuction();
   }, [fetchAuction]);
 
+  // Keep ref in sync with latest fetchAuction
+  useEffect(() => {
+    fetchRef.current = fetchAuction;
+  }, [fetchAuction]);
+
   // Separate effect for Pusher subscriptions - does NOT depend on auction state
   useEffect(() => {
     if (subscribedRef.current) return;
@@ -62,7 +68,7 @@ export function useAuction(auctionId: string, userId?: string) {
         setIsHighest(data.bidderId === userId);
       }
       // Refetch to update bid list for all viewers (especially OPEN type)
-      fetchAuction();
+      fetchRef.current();
     });
 
     channel.bind("auction-ended", (data: AuctionStatusEvent) => {
@@ -96,7 +102,7 @@ export function useAuction(auctionId: string, userId?: string) {
 
       userChannel.bind("bid-placed", () => {
         // Refetch to update own bids
-        fetchAuction();
+        fetchRef.current();
       });
     }
 
@@ -109,7 +115,7 @@ export function useAuction(auctionId: string, userId?: string) {
         pusher.unsubscribe(`private-user-${userId}`);
       }
     };
-  }, [auctionId, userId, fetchAuction]);
+  }, [auctionId, userId]);
 
   return {
     auction,

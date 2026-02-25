@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useI18n } from "@/components/providers/i18n-provider";
 import Link from "next/link";
+import { GridSkeleton } from "@/components/ui/skeleton";
 
 type WonAuction = {
   id: string;
@@ -21,13 +22,13 @@ export default function WonAuctionsPage() {
 
   useEffect(() => {
     fetch("/api/won-auctions")
-      .then((res) => res.json())
+      .then((res) => { if (!res.ok) throw new Error(); return res.json(); })
       .then(setAuctions)
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="p-4">{t("common.loading")}</div>;
+  if (loading) return <div className="space-y-6"><h2 className="text-2xl font-bold">{t("nav.wonAuctions")}</h2><GridSkeleton count={3} /></div>;
 
   return (
     <div className="space-y-6">
@@ -47,6 +48,7 @@ export default function WonAuctionsPage() {
                     <img
                       src={auction.vehicle.images[0]}
                       alt={auction.vehicle.name}
+                      loading="lazy"
                       className="h-full w-full object-cover"
                     />
                   </div>

@@ -17,6 +17,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { toast } from "sonner";
+import { GridSkeleton } from "@/components/ui/skeleton";
 
 type Vehicle = {
   id: string;
@@ -144,7 +145,7 @@ export default function VehiclesPage() {
   }
 
   if (loading) {
-    return <div>{t("common.loading")}</div>;
+    return <div className="space-y-6"><GridSkeleton count={6} /></div>;
   }
 
   return (
@@ -253,6 +254,7 @@ export default function VehiclesPage() {
                 <img
                   src={vehicle.images[0]}
                   alt={vehicle.name}
+                  loading="lazy"
                   className="h-full w-full object-cover"
                 />
               </div>

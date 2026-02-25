@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { pusher } from "@/lib/pusher-server";
-import { sendAuctionWonEmail, sendAuctionLostEmail } from "@/lib/email";
+import { sendAuctionWonEmail, sendNewAuctionEmail } from "@/lib/email";
 import { NextRequest, NextResponse } from "next/server";
 
 // This endpoint is called by Vercel Cron to manage auction lifecycle
@@ -8,8 +8,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   // Verify cron secret
+  const cronSecret = process.env.CRON_SECRET;
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -26,15 +27,29 @@ export async function GET(req: NextRequest) {
 
   await Promise.all(
     toStart.map(async (auction) => {
-      await prisma.auction.update({
-        where: { id: auction.id },
-        data: { status: "LIVE" },
-      });
+      // Use optimistic lock to prevent double-start race condition
+      try {
+        await prisma.auction.update({
+          where: { id: auction.id, status: "DRAFT" },
+          data: { status: "LIVE" },
+        });
 
-      await pusher.trigger(`auction-${auction.id}`, "auction-started", {
-        auctionId: auction.id,
-        status: "LIVE",
-      });
+        await pusher.trigger(`auction-${auction.id}`, "auction-started", {
+          auctionId: auction.id,
+          status: "LIVE",
+        });
+
+        // Notify all active buyers about new auction
+        sendNewAuctionEmail(
+          auction.vehicle.name,
+          auction.id,
+          auction.endTime,
+          auction.currency,
+          auction.startingPrice ? String(auction.startingPrice) : null
+        ).catch(() => {});
+      } catch {
+        // Status already changed by another process, skip
+      }
     })
   );
 
@@ -71,14 +86,20 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    await prisma.auction.update({
-      where: { id: auction.id },
-      data: {
-        status: "ENDED",
-        winnerId,
-        finalPrice,
-      },
-    });
+    // Use optimistic lock to prevent double-end race condition
+    try {
+      await prisma.auction.update({
+        where: { id: auction.id, status: "LIVE" },
+        data: {
+          status: "ENDED",
+          winnerId,
+          finalPrice,
+        },
+      });
+    } catch {
+      // Status already changed by another process (manual end or concurrent cron), skip
+      continue;
+    }
 
     // Broadcast auction ended
     await pusher.trigger(`auction-${auction.id}`, "auction-ended", {

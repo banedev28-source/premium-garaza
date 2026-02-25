@@ -1,11 +1,18 @@
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { BuyerNav } from "@/components/layout/buyer-nav";
 
-export default function BuyerLayout({
+export default async function BuyerLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   return (
     <div className="min-h-screen">
       <Header />

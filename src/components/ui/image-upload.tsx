@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 type ImageUploadProps = {
   images: string[];
@@ -32,7 +33,7 @@ export function ImageUpload({ images, onChange }: ImageUploadProps) {
         onChange([...images, ...data.urls]);
       }
     } catch {
-      // Upload failed
+      toast.error("Greska pri ucitavanju slike");
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = "";

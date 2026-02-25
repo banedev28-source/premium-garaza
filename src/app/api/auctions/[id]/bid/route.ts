@@ -4,6 +4,8 @@ import { pusher } from "@/lib/pusher-server";
 import { NextRequest, NextResponse } from "next/server";
 import { bidSchema } from "@/lib/validations";
 import { Prisma } from "@/generated/prisma/client";
+import { audit, getClientIp } from "@/lib/audit";
+import { bidLimiter, checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(
   req: NextRequest,
@@ -17,6 +19,19 @@ export async function POST(
   if (session.user.role !== "BUYER") {
     return NextResponse.json({ error: "Samo kupci mogu licitirati" }, { status: 403 });
   }
+
+  // Verify user is still active in DB (JWT may carry stale status)
+  const currentUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { status: true },
+  });
+  if (!currentUser || currentUser.status !== "ACTIVE") {
+    return NextResponse.json({ error: "Vas nalog je deaktiviran" }, { status: 403 });
+  }
+
+  // Rate limit: 30 bids per minute per user
+  const rlResponse = await checkRateLimit(bidLimiter, session.user.id);
+  if (rlResponse) return rlResponse;
 
   const { id: auctionId } = await params;
   const body = await req.json();
@@ -56,7 +71,8 @@ export async function POST(
         }
 
         // Check starting price
-        if (auction.startingPrice && amount < Number(auction.startingPrice)) {
+        const startingPrice = Number(auction.startingPrice);
+        if (auction.startingPrice && Number.isFinite(startingPrice) && amount < startingPrice) {
           throw new Error(`Minimalna ponuda je ${auction.startingPrice} ${auction.currency}`);
         }
 
@@ -68,7 +84,8 @@ export async function POST(
 
         // For non-sealed auctions, new bid must be higher than current highest
         if (auction.auctionType !== "SEALED" && highestBid) {
-          if (amount <= Number(highestBid.amount)) {
+          const highestAmount = Number(highestBid.amount);
+          if (!Number.isFinite(highestAmount) || amount <= highestAmount) {
             throw new Error(
               `Ponuda mora biti veca od trenutne najvece: ${highestBid.amount} ${auction.currency}`
             );
@@ -90,7 +107,24 @@ export async function POST(
         // Get updated bid count
         const bidCount = await tx.bid.count({ where: { auctionId } });
 
-        return { bid, auction, highestBid, bidCount };
+        // For INDICATOR type, get bidder list inside TX for consistency
+        let indicatorData: { bidders: { userId: string }[]; currentHighest: { userId: string; amount: typeof bid.amount } | null } | null = null;
+        if (auction.auctionType === "INDICATOR") {
+          const [bidders, currentHighest] = await Promise.all([
+            tx.bid.findMany({
+              where: { auctionId },
+              select: { userId: true },
+              distinct: ["userId"],
+            }),
+            tx.bid.findFirst({
+              where: { auctionId },
+              orderBy: { amount: "desc" },
+            }),
+          ]);
+          indicatorData = { bidders, currentHighest };
+        }
+
+        return { bid, auction, highestBid, bidCount, indicatorData };
       },
       {
         isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
@@ -129,18 +163,8 @@ export async function POST(
         break;
 
       case "INDICATOR": {
-        // Get all unique bidders + actual highest bid after transaction
-        const [bidders, currentHighest] = await Promise.all([
-          prisma.bid.findMany({
-            where: { auctionId },
-            select: { userId: true },
-            distinct: ["userId"],
-          }),
-          prisma.bid.findFirst({
-            where: { auctionId },
-            orderBy: { amount: "desc" },
-          }),
-        ]);
+        // Use bidder list and highest bid from inside the transaction
+        const { bidders, currentHighest } = result.indicatorData!;
 
         // Send private indicator to each bidder + bid-placed in parallel
         await Promise.all([
@@ -244,6 +268,9 @@ export async function POST(
         ),
       ]);
     }
+
+    const ip = await getClientIp();
+    audit({ action: "BID_PLACED", userId: session.user.id, targetId: auctionId, metadata: { amount }, ip });
 
     return NextResponse.json({
       success: true,

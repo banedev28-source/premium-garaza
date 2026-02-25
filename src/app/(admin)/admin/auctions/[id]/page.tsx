@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { toast } from "sonner";
 import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type AuctionDetail = {
   id: string;
@@ -77,7 +78,7 @@ export default function AuctionDetailPage({
     }
   }
 
-  if (loading) return <div>{t("common.loading")}</div>;
+  if (loading) return <div className="space-y-6"><Skeleton className="h-8 w-48" /><div className="grid gap-6 md:grid-cols-2"><Skeleton className="h-64 rounded-lg" /><Skeleton className="h-64 rounded-lg" /></div></div>;
   if (!auction) return <div>Not found</div>;
 
   return (
@@ -99,10 +100,11 @@ export default function AuctionDetailPage({
           <CardContent className="space-y-3">
             {auction.vehicle.images[0] && (
               <img
-                src={auction.vehicle.images[0]}
-                alt={auction.vehicle.name}
-                className="w-full rounded-lg object-cover aspect-video"
-              />
+              src={auction.vehicle.images[0]}
+              alt={auction.vehicle.name}
+              loading="lazy"
+              className="w-full rounded-lg object-cover aspect-video"
+            />
             )}
             {auction.vehicle.description && (
               <p className="text-sm">{auction.vehicle.description}</p>
