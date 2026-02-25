@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-const EMAIL_FROM = `Premium Garaza <${process.env.EMAIL_FROM || "noreply@premiumgaraza.rs"}>`;
+const EMAIL_FROM = `Premium Garaza <${process.env.EMAIL_FROM || "noreply@aukcija.maconi.rs"}>`;
 
 /** Escape HTML special characters to prevent injection */
 function escapeHtml(str: string): string {
