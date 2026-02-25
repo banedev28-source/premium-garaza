@@ -40,7 +40,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://images.unsplash.com https://*.public.blob.vercel-storage.com",
               "font-src 'self'",
-              "connect-src 'self' wss://*.pusher.com https://*.pusher.com https://sockjs-*.pusher.com",
+              "connect-src 'self' wss://*.pusher.com https://*.pusher.com https://*.public.blob.vercel-storage.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",
