@@ -103,7 +103,7 @@ export default function AuctionDetailPage({
               src={auction.vehicle.images[0]}
               alt={auction.vehicle.name}
               loading="lazy"
-              className="w-full rounded-lg object-cover aspect-video"
+              className="w-full rounded-lg object-contain aspect-video"
             />
             )}
             {auction.vehicle.description && (

@@ -68,7 +68,7 @@ export default function MyBidsPage() {
                         src={auction.vehicle.images[0]}
                         alt=""
                         loading="lazy"
-                        className="h-16 w-24 rounded object-cover"
+                        className="h-16 w-24 rounded object-contain"
                       />
                     )}
                     <div className="flex-1">

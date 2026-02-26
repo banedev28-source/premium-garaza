@@ -49,7 +49,7 @@ export default function WonAuctionsPage() {
                       src={auction.vehicle.images[0]}
                       alt={auction.vehicle.name}
                       loading="lazy"
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-contain"
                     />
                   </div>
                 )}

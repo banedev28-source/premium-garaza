@@ -109,7 +109,7 @@ export default function AuctionsPage() {
                     src={auction.vehicle.images[0]}
                     alt={auction.vehicle.name}
                     loading="lazy"
-                    className={`h-full w-full object-cover ${auction.status === "ENDED" ? "grayscale" : ""}`}
+                    className={`h-full w-full object-contain ${auction.status === "ENDED" ? "grayscale" : ""}`}
                   />
                 </div>
               )}

@@ -120,7 +120,7 @@ export default function AuctionDetailPage({
                 <img
                   src={auction.vehicle.images[currentImage]}
                   alt={auction.vehicle.name}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-contain"
                 />
               </div>
               {auction.vehicle.images.length > 1 && (
@@ -138,7 +138,7 @@ export default function AuctionDetailPage({
                       <img
                         src={img}
                         alt=""
-                        className="h-full w-full object-cover"
+                        className="h-full w-full object-contain"
                       />
                     </button>
                   ))}

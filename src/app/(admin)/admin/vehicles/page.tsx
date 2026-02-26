@@ -263,7 +263,7 @@ export default function VehiclesPage() {
                   src={vehicle.images[0]}
                   alt={vehicle.name}
                   loading="lazy"
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-contain"
                 />
               </div>
             )}

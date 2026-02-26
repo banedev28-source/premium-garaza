@@ -68,7 +68,7 @@ export function ImageUpload({ images, onChange }: ImageUploadProps) {
           <div className="grid grid-cols-3 gap-2">
             {visibleImages.map((src, idx) => (
               <div key={idx} className="relative group aspect-video rounded-md overflow-hidden border">
-                <img src={src} alt="" className="h-full w-full object-cover" />
+                <img src={src} alt="" className="h-full w-full object-contain" />
                 <button
                   type="button"
                   onClick={() => removeImage(idx)}

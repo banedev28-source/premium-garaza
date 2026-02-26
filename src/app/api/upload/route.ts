@@ -5,8 +5,8 @@ import { audit, getClientIp } from "@/lib/audit";
 import { uploadLimiter, checkRateLimit } from "@/lib/rate-limit";
 import { put } from "@vercel/blob";
 
-const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif", "image/heic", "image/heif"]);
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB (HEIC files can be larger)
 
 // Magic byte signatures for allowed image formats
 const MAGIC_BYTES: { signature: number[]; offset?: number; ext: string; extra?: { offset: number; bytes: number[] } }[] = [
