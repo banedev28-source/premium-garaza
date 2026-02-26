@@ -11,6 +11,38 @@ type ImageUploadProps = {
 
 const MAX_VISIBLE = 6;
 
+// Compress image to JPEG under target size using canvas
+async function compressImage(file: File, maxSize = 3 * 1024 * 1024): Promise<File> {
+  // Skip if already small enough or not an image type we can compress
+  if (file.size <= maxSize) return file;
+
+  const bitmap = await createImageBitmap(file);
+
+  // Scale down if very large resolution
+  let { width, height } = bitmap;
+  const maxDim = 3840; // 4K max
+  if (width > maxDim || height > maxDim) {
+    const scale = maxDim / Math.max(width, height);
+    width = Math.round(width * scale);
+    height = Math.round(height * scale);
+  }
+
+  const canvas = new OffscreenCanvas(width, height);
+  const ctx = canvas.getContext("2d")!;
+  ctx.drawImage(bitmap, 0, 0, width, height);
+  bitmap.close();
+
+  // Try decreasing quality until under maxSize
+  let quality = 0.85;
+  let blob = await canvas.convertToBlob({ type: "image/jpeg", quality });
+  while (blob.size > maxSize && quality > 0.3) {
+    quality -= 0.1;
+    blob = await canvas.convertToBlob({ type: "image/jpeg", quality });
+  }
+
+  return new File([blob], file.name.replace(/\.[^.]+$/, ".jpg"), { type: "image/jpeg" });
+}
+
 export function ImageUpload({ images, onChange }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [showAll, setShowAll] = useState(false);
@@ -22,7 +54,8 @@ export function ImageUpload({ images, onChange }: ImageUploadProps) {
     setUploading(true);
     const formData = new FormData();
     for (const file of Array.from(files)) {
-      formData.append("files", file);
+      const compressed = await compressImage(file);
+      formData.append("files", compressed);
     }
 
     try {
@@ -39,7 +72,7 @@ export function ImageUpload({ images, onChange }: ImageUploadProps) {
 
       const data = await res.json();
       if (!data.urls?.length) {
-        toast.error("Fajl nije prihvacen. Dozvoljeni formati: JPG, PNG, WebP, GIF (max 5MB)");
+        toast.error("Fajl nije prihvacen. Dozvoljeni formati: JPG, PNG, WebP, GIF (max 10MB)");
         return;
       }
       onChange([...images, ...data.urls]);
@@ -133,7 +166,7 @@ export function ImageUpload({ images, onChange }: ImageUploadProps) {
               Kliknite ili prevucite slike ovde
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              JPG, PNG, WebP, GIF &middot; Max 5MB
+              JPG, PNG, WebP, GIF &middot; Max 10MB
             </p>
           </div>
         )}
