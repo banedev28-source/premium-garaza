@@ -28,10 +28,18 @@ export function ImageUpload({ images, onChange }: ImageUploadProps) {
         body: formData,
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        onChange([...images, ...data.urls]);
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        toast.error(err?.error || `Greska pri ucitavanju (${res.status})`);
+        return;
       }
+
+      const data = await res.json();
+      if (!data.urls?.length) {
+        toast.error("Fajl nije prihvacen. Dozvoljeni formati: JPG, PNG, WebP, GIF (max 5MB)");
+        return;
+      }
+      onChange([...images, ...data.urls]);
     } catch {
       toast.error("Greska pri ucitavanju slike");
     } finally {
@@ -76,7 +84,7 @@ export function ImageUpload({ images, onChange }: ImageUploadProps) {
         <input
           ref={inputRef}
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp,image/gif"
           multiple
           className="hidden"
           onChange={(e) => handleFiles(e.target.files)}
