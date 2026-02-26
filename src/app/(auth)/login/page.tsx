@@ -39,7 +39,8 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
+        <CardHeader className="text-center space-y-3">
+          <div className="mx-auto w-16 h-16 bg-[#d4a843] rounded-2xl flex items-center justify-center font-bold text-[#1a1a2e] text-3xl" style={{fontFamily:"Georgia,serif"}}>PG</div>
           <CardTitle className="text-2xl font-bold">
             {t("common.appName")}
           </CardTitle>

@@ -33,7 +33,10 @@ export function Header() {
       <div className="container flex h-14 items-center justify-between px-4">
         <div className="flex items-center gap-2">
           <MobileNav />
-          <h1 className="text-lg font-bold">{t("common.appName")}</h1>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-[#d4a843] rounded-lg flex items-center justify-center font-bold text-[#1a1a2e] text-sm" style={{fontFamily:"Georgia,serif"}}>PG</div>
+            <h1 className="text-lg font-bold hidden sm:block">{t("common.appName")}</h1>
+          </div>
         </div>
 
         <div className="flex items-center gap-1 sm:gap-2">

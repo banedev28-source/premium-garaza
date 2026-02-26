@@ -44,7 +44,7 @@ function emailLayout(content: string): string {
             &copy; ${new Date().getFullYear()} Premium Garaza &middot; Platforma za aukcije vozila
           </p>
           <p style="margin:8px 0 0;font-size:12px;color:#a1a1aa;">
-            <a href="${APP_URL}" style="color:#d4a843;text-decoration:none;">premiumgaraza.rs</a>
+            <a href="${APP_URL}" style="color:#d4a843;text-decoration:none;">aukcija.maconi.rs</a>
           </p>
         </td></tr>
       </table>

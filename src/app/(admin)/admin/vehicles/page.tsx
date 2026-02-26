@@ -162,13 +162,20 @@ export default function VehiclesPage() {
           <DialogTrigger asChild>
             <Button>{t("vehicle.create")}</Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col">
+          <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col" onPointerDownOutside={() => {
+            if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+          }}>
             <DialogHeader>
               <DialogTitle>
                 {editingVehicle ? t("common.edit") : t("vehicle.create")}
               </DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto flex-1 pr-1">
+            <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto flex-1 pr-1" onClick={(e) => {
+              const tag = (e.target as HTMLElement).tagName;
+              if (tag !== "INPUT" && tag !== "TEXTAREA" && tag !== "SELECT") {
+                if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+              }
+            }}>
               <div className="space-y-2">
                 <Label>{t("vehicle.name")}</Label>
                 <Input value={name} onChange={(e) => setName(e.target.value)} required />
@@ -211,12 +218,13 @@ export default function VehiclesPage() {
                 <Label>{t("vehicle.images")}</Label>
                 <ImageUpload images={images} onChange={setImages} />
               </div>
-              <div className="flex gap-2 justify-end">
+              <div className="flex gap-2 justify-end sticky bottom-0 bg-background pt-3 pb-1 border-t">
                 <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
                   {t("common.cancel")}
                 </Button>
                 <Button type="submit">{t("common.save")}</Button>
               </div>
+              <div className="h-8 sm:h-0" />
             </form>
           </DialogContent>
         </Dialog>
